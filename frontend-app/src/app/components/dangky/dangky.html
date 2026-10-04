@@ -1,0 +1,343 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page-header">
+<div>
+  <p class="page-label">
+    QUẢN LÝ ĐĂNG KÝ
+  </p>
+  <h1>
+    Đăng ký đề tài
+  </h1>
+  <p class="page-description">
+    Quản lý sinh viên đăng ký đề tài tốt nghiệp và kết quả thực hiện
+  </p>
+</div>
+<div class="registration-count">
+  <span>
+    Tổng đăng ký
+  </span>
+  <strong>
+    {{ dangkys.length }}
+  </strong>
+</div>
+  </div>
+  <!-- Registration Table -->
+  <div class="card">
+<div class="card-header">
+  <div>
+    <h2>
+      Danh sách đăng ký
+    </h2>
+    <p>
+      Thông tin sinh viên, đề tài và kết quả đăng ký
+    </p>
+  </div>
+</div>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>
+          Mã ĐK
+        </th>
+        <th>
+          Sinh viên
+        </th>
+        <th>
+          Đề tài
+        </th>
+        <th>
+          Giảng viên
+        </th>
+        <th>
+          Ngày đăng ký
+        </th>
+        <th>
+          Trạng thái
+        </th>
+        <th>
+          Điểm
+        </th>
+        <th>
+          Thao tác
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (
+        dangky of dangkys;
+        track dangky.ma_dk
+      ) {
+        <tr>
+          <!-- Mã đăng ký -->
+          <td>
+            <span class="registration-id">
+              #{{ dangky.ma_dk }}
+            </span>
+          </td>
+          <!-- Sinh viên -->
+          <td>
+            @if (dangky.sinh_vien) {
+              <div class="person">
+                <div class="avatar student-avatar">
+                  {{ dangky.sinh_vien.ho_ten?.charAt(0) }}
+                </div>
+                <div class="person-info">
+                  <strong>
+                    {{ dangky.sinh_vien.ho_ten }}
+                  </strong>
+                  <span>
+                    {{ dangky.sinh_vien.ma_sv }}
+                  </span>
+                </div>
+              </div>
+            } @else {
+              <span>
+                {{ dangky.ma_sv }}
+              </span>
+            }
+          </td>
+          <!-- Đề tài -->
+          <td>
+            @if (dangky.de_tai) {
+              <div class="thesis-info">
+                <strong>
+                  {{ dangky.de_tai.ten_dt }}
+                </strong>
+                <span>
+                  {{ dangky.de_tai.ma_dt }}
+                </span>
+              </div>
+            } @else {
+              <span>
+                {{ dangky.ma_dt }}
+              </span>
+            }
+          </td>
+          <!-- Giảng viên -->
+          <td>
+            @if (dangky.de_tai) {
+              <div class="lecturer">
+                <div class="avatar lecturer-avatar">
+                  {{ dangky.de_tai.giang_vien?.charAt(0) }}
+                </div>
+                <span>
+                  {{ dangky.de_tai.giang_vien }}
+                </span>
+              </div>
+            } @else {
+              <span>
+                -
+              </span>
+            }
+          </td>
+          <!-- Ngày -->
+          <td>
+            <span class="date">
+              {{ dangky.ngay_dang_ky?.substring(0, 10) }}
+            </span>
+          </td>
+          <!-- Trạng thái -->
+          <td>
+            @if (
+              dangky.trang_thai === 'DA_DANG_KY'
+            ) {
+              <span class="status status-registered">
+                Đã đăng ký
+              </span>
+            } @else if (
+              dangky.trang_thai === 'HOAN_THANH'
+            ) {
+              <span class="status status-completed">
+                Hoàn thành
+              </span>
+            } @else {
+              <span class="status status-cancelled">
+                Đã hủy
+              </span>
+            }
+          </td>
+          <!-- Điểm -->
+          <td>
+            @if (dangky.diem !== null && dangky.diem !== undefined) {
+              <span
+                class="score"
+                [class.high-score]="dangky.diem >= 8"
+                [class.medium-score]="
+                  dangky.diem >= 5 &&
+                  dangky.diem < 8
+                "
+                [class.low-score]="dangky.diem < 5">
+                {{ dangky.diem }}
+              </span>
+            } @else {
+              <span class="no-score">
+                Chưa có
+              </span>
+            }
+          </td>
+          <!-- Actions -->
+          <td>
+            <div class="actions">
+              <button
+                type="button"
+                class="btn-edit"
+                (click)="editDangKy(dangky)">
+                Sửa
+              </button>
+              <button
+                type="button"
+                class="btn-delete"
+                (click)="deleteDangKy(dangky.ma_dk)">
+                Xóa
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+      @if (dangkys.length === 0) {
+        <tr>
+          <td
+            colspan="8"
+            class="empty">
+            Chưa có dữ liệu đăng ký
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+  </div>
+  <!-- Form -->
+  <div class="card form-card">
+<div class="card-header">
+  <div>
+    <p class="form-label">
+      {{ editing
+        ? 'CHỈNH SỬA'
+        : 'THÊM MỚI'
+      }}
+    </p>
+    <h2>
+      {{ editing
+        ? 'Cập nhật đăng ký'
+        : 'Thêm đăng ký'
+      }}
+    </h2>
+    <p>
+      {{
+        editing
+          ? 'Cập nhật thông tin đăng ký và kết quả của sinh viên'
+          : 'Tạo đăng ký đề tài cho sinh viên'
+      }}
+    </p>
+  </div>
+</div>
+<form
+  (ngSubmit)="
+    editing
+      ? updateDangKy()
+      : createDangKy()
+  ">
+  <div class="form-grid">
+    <!-- Sinh viên -->
+    <div class="form-group">
+      <label>
+        Mã sinh viên
+      </label>
+      <input
+        type="text"
+        name="ma_sv"
+        [(ngModel)]="newDangKy.ma_sv"
+        [disabled]="editing"
+        placeholder="VD: SV001"
+        required>
+      <small>
+        Sinh viên phải tồn tại trong hệ thống
+      </small>
+    </div>
+    <!-- Đề tài -->
+    <div class="form-group">
+      <label>
+        Mã đề tài
+      </label>
+      <input
+        type="text"
+        name="ma_dt"
+        [(ngModel)]="newDangKy.ma_dt"
+        [disabled]="editing"
+        placeholder="VD: DT001"
+        required>
+      <small>
+        Đề tài phải tồn tại và còn chỗ
+      </small>
+    </div>
+    <!-- Ngày -->
+    <div class="form-group">
+      <label>
+        Ngày đăng ký
+      </label>
+      <input
+        type="date"
+        name="ngay_dang_ky"
+        [(ngModel)]="newDangKy.ngay_dang_ky"
+        required>
+    </div>
+    <!-- Status -->
+    <div class="form-group">
+      <label>
+        Trạng thái
+      </label>
+      <select
+        name="trang_thai"
+        [(ngModel)]="newDangKy.trang_thai">
+        <option value="DA_DANG_KY">
+          Đã đăng ký
+        </option>
+        <option value="DA_HUY">
+          Đã hủy
+        </option>
+        <option value="HOAN_THANH">
+          Hoàn thành
+        </option>
+      </select>
+    </div>
+    <!-- Score -->
+    <div class="form-group score-group">
+      <label>
+        Điểm
+      </label>
+      <input
+        type="number"
+        name="diem"
+        [(ngModel)]="newDangKy.diem"
+        min="0"
+        max="10"
+        step="0.01"
+        placeholder="0 - 10">
+      <small>
+        Điểm từ 0 đến 10
+      </small>
+    </div>
+  </div>
+  <div class="form-actions">
+    <button
+      type="submit"
+      class="btn-primary">
+      {{ editing
+        ? 'Cập nhật đăng ký'
+        : 'Thêm đăng ký'
+      }}
+    </button>
+    @if (editing) {
+      <button
+        type="button"
+        class="btn-cancel"
+        (click)="resetForm()">
+        Hủy
+      </button>
+    }
+  </div>
+</form>
+  </div>
+</div>

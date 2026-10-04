@@ -1,0 +1,214 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <p class="page-label">QUẢN LÝ SINH VIÊN</p>
+      <h1>Danh sách sinh viên</h1>
+      <p class="page-description">
+        Quản lý thông tin sinh viên trong hệ thống đồ án tốt nghiệp
+      </p>
+    </div>
+    <div class="student-count">
+      <span>Tổng sinh viên</span>
+      <strong>{{ sinhviens.length }}</strong>
+    </div>
+  </div>
+  <!-- Table Card -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>Danh sách sinh viên</h2>
+        <p>Thông tin các sinh viên đang được quản lý</p>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã SV</th>
+            <th>Họ tên</th>
+            <th>Ngày sinh</th>
+            <th>Giới tính</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Lớp</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (sinhvien of sinhviens; track sinhvien.ma_sv) {
+            <tr>
+              <td>
+                <span class="student-id">
+                  {{ sinhvien.ma_sv }}
+                </span>
+              </td>
+              <td>
+                <div class="student-name">
+                  {{ sinhvien.ho_ten }}
+                </div>
+              </td>
+              <td>
+                {{ sinhvien.ngay_sinh?.substring(0, 10) }}
+              </td>
+              <td>
+                <span class="gender-badge">
+                  {{ sinhvien.gioi_tinh }}
+                </span>
+              </td>
+              <td>
+                {{ sinhvien.email }}
+              </td>
+              <td>
+                {{ sinhvien.so_dien_thoai }}
+              </td>
+              <td>
+                <span class="class-badge">
+                  {{ sinhvien.lop }}
+                </span>
+              </td>
+              <td>
+                <div class="actions">
+                  <button
+                    type="button"
+                    class="btn-edit"
+                    (click)="editSinhVien(sinhvien)">
+                    Sửa
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-delete"
+                    (click)="deleteSinhVien(sinhvien.ma_sv)">
+                    Xóa
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+          @if (sinhviens.length === 0) {
+            <tr>
+              <td
+                colspan="8"
+                class="empty">
+                Chưa có dữ liệu sinh viên
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Form Card -->
+  <div class="card form-card">
+    <div class="card-header">
+      <div>
+        <p class="form-label">
+          {{ editing ? 'CHỈNH SỬA' : 'THÊM MỚI' }}
+        </p>
+        <h2>
+          {{ editing
+            ? 'Cập nhật sinh viên'
+            : 'Thêm sinh viên'
+          }}
+        </h2>
+        <p>
+          {{
+            editing
+              ? 'Cập nhật thông tin sinh viên đang được chọn'
+              : 'Nhập thông tin để thêm sinh viên mới'
+          }}
+        </p>
+      </div>
+    </div>
+    <form
+      (ngSubmit)="editing ? updateSinhVien() : createSinhVien()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Mã sinh viên</label>
+          <input
+            type="text"
+            name="ma_sv"
+            [(ngModel)]="newSinhVien.ma_sv"
+            [disabled]="editing"
+            placeholder="VD: SV001"
+            required>
+        </div>
+        <div class="form-group">
+          <label>Họ và tên</label>
+          <input
+            type="text"
+            name="ho_ten"
+            [(ngModel)]="newSinhVien.ho_ten"
+            placeholder="Nhập họ và tên"
+            required>
+        </div>
+        <div class="form-group">
+          <label>Ngày sinh</label>
+          <input
+            type="date"
+            name="ngay_sinh"
+            [(ngModel)]="newSinhVien.ngay_sinh">
+        </div>
+        <div class="form-group">
+          <label>Giới tính</label>
+          <select
+            name="gioi_tinh"
+            [(ngModel)]="newSinhVien.gioi_tinh">
+            <option value="">
+              -- Chọn giới tính --
+            </option>
+            <option value="Nam">
+              Nam
+            </option>
+            <option value="Nữ">
+              Nữ
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="newSinhVien.email"
+            placeholder="example@gmail.com">
+        </div>
+        <div class="form-group">
+          <label>Số điện thoại</label>
+          <input
+            type="text"
+            name="so_dien_thoai"
+            [(ngModel)]="newSinhVien.so_dien_thoai"
+            placeholder="VD: 0912345678">
+        </div>
+        <div class="form-group">
+          <label>Lớp</label>
+          <input
+            type="text"
+            name="lop"
+            [(ngModel)]="newSinhVien.lop"
+            placeholder="VD: SE04"
+            required>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn-primary">
+          {{ editing
+            ? 'Cập nhật sinh viên'
+            : 'Thêm sinh viên'
+          }}
+        </button>
+        @if (editing) {
+          <button
+            type="button"
+            class="btn-cancel"
+            (click)="resetForm()">
+            Hủy
+          </button>
+        }
+      </div>
+    </form>
+  </div>
+</div>

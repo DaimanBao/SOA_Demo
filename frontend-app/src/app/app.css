@@ -1,0 +1,162 @@
+* {
+  box-sizing: border-box;
+  }
+body {
+margin: 0;
+font-family:
+Arial,
+Helvetica,
+sans-serif;
+background: #f7f8fc;
+color: #262626;
+}
+/* =========================
+NAVBAR
+========================= */
+.navbar {
+position: sticky;
+top: 0;
+z-index: 1000;
+height: 72px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 0 30px;
+background: white;
+border-bottom: 1px solid #e5e7eb;
+box-shadow:
+0 2px 10px rgba(0, 0, 0, 0.04);
+}
+/* =========================
+BRAND
+========================= */
+.navbar-brand {
+display: flex;
+align-items: center;
+gap: 11px;
+min-width: 220px;
+}
+.brand-icon {
+width: 40px;
+height: 40px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 10px;
+background: #eef2ff;
+font-size: 21px;
+}
+.brand-text {
+display: flex;
+flex-direction: column;
+line-height: 1.2;
+}
+.brand-text strong {
+color: #262626;
+font-size: 15px;
+font-weight: 700;
+}
+.brand-text span {
+margin-top: 3px;
+color: #737373;
+font-size: 11px;
+}
+/* =========================
+MENU
+========================= */
+.nav-menu {
+display: flex;
+align-items: center;
+gap: 5px;
+height: 100%;
+}
+.nav-menu a {
+position: relative;
+display: flex;
+align-items: center;
+gap: 7px;
+height: 42px;
+padding: 0 14px;
+border-radius: 8px;
+color: #737373;
+text-decoration: none;
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+transition:
+background 0.15s ease,
+color 0.15s ease;
+}
+.nav-menu a:hover {
+background: #f5f5f5;
+color: #404040;
+}
+.nav-menu a.active {
+background: #eef2ff;
+color: #4f46e5;
+}
+.nav-icon {
+font-size: 15px;
+}
+/* =========================
+STATUS
+========================= */
+.navbar-status {
+min-width: 180px;
+display: flex;
+align-items: center;
+justify-content: flex-end;
+gap: 7px;
+color: #737373;
+font-size: 11px;
+}
+.status-dot {
+width: 7px;
+height: 7px;
+border-radius: 50%;
+background: #22c55e;
+box-shadow:
+0 0 0 3px #dcfce7;
+}
+/* =========================
+MAIN
+========================= */
+main {
+min-height: calc(100vh - 72px);
+}
+/* =========================
+RESPONSIVE
+========================= */
+@media (max-width: 1000px) {
+.navbar {
+padding: 0 20px;
+}
+.navbar-brand {
+min-width: auto;
+}
+.navbar-status {
+display: none;
+}
+}
+@media (max-width: 700px) {
+.navbar {
+height: auto;
+min-height: 72px;
+flex-wrap: wrap;
+gap: 10px;
+padding: 12px 15px;
+}
+.nav-menu {
+order: 3;
+width: 100%;
+height: auto;
+overflow-x: auto;
+padding-bottom: 2px;
+}
+.nav-menu a {
+flex-shrink: 0;
+}
+main {
+min-height: calc(100vh - 120px);
+}
+}

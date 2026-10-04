@@ -1,0 +1,336 @@
+.page {
+max-width: 1400px;
+margin: 0 auto;
+padding: 30px;
+background: #f7f8fc;
+min-height: calc(100vh - 80px);
+}
+/* =========================
+PAGE HEADER
+========================= */
+.page-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 30px;
+}
+.page-label,
+.form-label {
+margin: 0 0 6px;
+font-size: 12px;
+font-weight: 700;
+letter-spacing: 1px;
+color: #6366f1;
+}
+.page-header h1 {
+margin: 0;
+font-size: 30px;
+color: #171717;
+}
+.page-description {
+margin: 8px 0 0;
+color: #737373;
+font-size: 14px;
+}
+/* =========================
+THESIS COUNT
+========================= */
+.thesis-count {
+min-width: 150px;
+padding: 18px 22px;
+background: white;
+border: 1px solid #e5e7eb;
+border-radius: 12px;
+box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+.thesis-count span {
+display: block;
+color: #737373;
+font-size: 13px;
+margin-bottom: 5px;
+}
+.thesis-count strong {
+font-size: 28px;
+color: #4f46e5;
+}
+/* =========================
+CARD
+========================= */
+.card {
+background: white;
+border: 1px solid #e5e7eb;
+border-radius: 14px;
+margin-bottom: 25px;
+box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+overflow: hidden;
+}
+.card-header {
+padding: 22px 25px;
+border-bottom: 1px solid #eeeeee;
+}
+.card-header h2 {
+margin: 0;
+font-size: 19px;
+color: #262626;
+}
+.card-header p {
+margin: 6px 0 0;
+color: #737373;
+font-size: 13px;
+}
+/* =========================
+TABLE
+========================= */
+.table-wrapper {
+width: 100%;
+overflow-x: auto;
+}
+table {
+width: 100%;
+border-collapse: collapse;
+min-width: 900px;
+}
+thead {
+background: #f8fafc;
+}
+th {
+padding: 14px 16px;
+text-align: left;
+font-size: 12px;
+font-weight: 700;
+color: #64748b;
+text-transform: uppercase;
+letter-spacing: 0.3px;
+border-bottom: 1px solid #e5e7eb;
+}
+td {
+padding: 15px 16px;
+font-size: 14px;
+color: #404040;
+border-bottom: 1px solid #f0f0f0;
+}
+tbody tr {
+transition: background 0.15s ease;
+}
+tbody tr:hover {
+background: #fafafa;
+}
+tbody tr:last-child td {
+border-bottom: none;
+}
+/* =========================
+THESIS ID
+========================= */
+.thesis-id {
+font-weight: 700;
+color: #4f46e5;
+}
+/* =========================
+THESIS NAME
+========================= */
+.thesis-name {
+max-width: 360px;
+font-weight: 600;
+line-height: 1.4;
+color: #262626;
+}
+/* =========================
+LECTURER
+========================= */
+.lecturer {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.lecturer-avatar {
+width: 32px;
+height: 32px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 50%;
+background: #eef2ff;
+color: #4f46e5;
+font-size: 13px;
+font-weight: 700;
+}
+/* =========================
+STUDENT COUNT
+========================= */
+.student-count-badge {
+display: inline-flex;
+align-items: center;
+gap: 4px;
+padding: 6px 10px;
+background: #f3f4f6;
+border-radius: 20px;
+font-size: 13px;
+font-weight: 700;
+color: #404040;
+}
+.student-count-badge span {
+font-size: 11px;
+color: #737373;
+}
+/* =========================
+STATUS
+========================= */
+.status {
+display: inline-block;
+padding: 6px 11px;
+border-radius: 20px;
+font-size: 12px;
+font-weight: 700;
+}
+.status-open {
+background: #ecfdf5;
+color: #059669;
+}
+.status-full {
+background: #fffbeb;
+color: #d97706;
+}
+.status-closed {
+background: #fef2f2;
+color: #dc2626;
+}
+/* =========================
+ACTIONS
+========================= */
+.actions {
+display: flex;
+gap: 7px;
+}
+button {
+border: none;
+cursor: pointer;
+font-family: inherit;
+}
+.btn-edit,
+.btn-delete {
+padding: 7px 12px;
+border-radius: 7px;
+font-size: 13px;
+font-weight: 600;
+transition: 0.15s;
+}
+.btn-edit {
+background: #eef2ff;
+color: #4f46e5;
+}
+.btn-edit:hover {
+background: #e0e7ff;
+}
+.btn-delete {
+background: #fef2f2;
+color: #dc2626;
+}
+.btn-delete:hover {
+background: #fee2e2;
+}
+/* =========================
+EMPTY
+========================= */
+.empty {
+text-align: center;
+padding: 40px;
+color: #9ca3af;
+}
+/* =========================
+FORM
+========================= */
+.form-card {
+padding-bottom: 25px;
+}
+.form-card form {
+padding: 25px;
+}
+.form-grid {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 20px 25px;
+}
+.form-group {
+display: flex;
+flex-direction: column;
+}
+.form-group label {
+margin-bottom: 7px;
+font-size: 13px;
+font-weight: 600;
+color: #404040;
+}
+.form-group input,
+.form-group select {
+width: 100%;
+box-sizing: border-box;
+padding: 11px 13px;
+border: 1px solid #d4d4d4;
+border-radius: 8px;
+background: white;
+font-size: 14px;
+font-family: inherit;
+outline: none;
+transition: 0.15s;
+}
+.form-group input:focus,
+.form-group select:focus {
+border-color: #6366f1;
+box-shadow:
+0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+.form-group input:disabled {
+background: #f5f5f5;
+color: #737373;
+cursor: not-allowed;
+}
+/* =========================
+FORM BUTTONS
+========================= */
+.form-actions {
+display: flex;
+gap: 10px;
+margin-top: 25px;
+}
+.btn-primary,
+.btn-cancel {
+padding: 11px 18px;
+border-radius: 8px;
+font-size: 14px;
+font-weight: 600;
+transition: 0.15s;
+}
+.btn-primary {
+background: #4f46e5;
+color: white;
+}
+.btn-primary:hover {
+background: #4338ca;
+}
+.btn-cancel {
+background: #f3f4f6;
+color: #404040;
+}
+.btn-cancel:hover {
+background: #e5e7eb;
+}
+/* =========================
+RESPONSIVE
+========================= */
+@media (max-width: 800px) {
+.page {
+padding: 20px 15px;
+}
+.page-header {
+flex-direction: column;
+align-items: flex-start;
+gap: 20px;
+}
+.thesis-count {
+width: 100%;
+box-sizing: border-box;
+}
+.form-grid {
+grid-template-columns: 1fr;
+}
+}

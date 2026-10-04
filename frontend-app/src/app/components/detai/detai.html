@@ -1,0 +1,220 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page-header">
+<div>
+  <p class="page-label">QUẢN LÝ ĐỀ TÀI</p>
+  <h1>Danh sách đề tài</h1>
+  <p class="page-description">
+    Quản lý các đề tài tốt nghiệp và thông tin giảng viên hướng dẫn
+  </p>
+</div>
+<div class="thesis-count">
+  <span>Tổng đề tài</span>
+  <strong>{{ detais.length }}</strong>
+</div>
+  </div>
+  <!-- Table -->
+  <div class="card">
+<div class="card-header">
+  <div>
+    <h2>Danh sách đề tài</h2>
+    <p>
+      Thông tin các đề tài đang được quản lý trong hệ thống
+    </p>
+  </div>
+</div>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Mã đề tài</th>
+        <th>Tên đề tài</th>
+        <th>Giảng viên</th>
+        <th>Số lượng SV</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (detai of detais; track detai.ma_dt) {
+        <tr>
+          <td>
+            <span class="thesis-id">
+              {{ detai.ma_dt }}
+            </span>
+          </td>
+          <td>
+            <div class="thesis-name">
+              {{ detai.ten_dt }}
+            </div>
+          </td>
+          <td>
+            <div class="lecturer">
+              <div class="lecturer-avatar">
+                {{ detai.giang_vien?.charAt(0) }}
+              </div>
+              <span>
+                {{ detai.giang_vien }}
+              </span>
+            </div>
+          </td>
+          <td>
+            <span class="student-count-badge">
+              {{ detai.so_luong_sv }}
+              <span>
+                SV
+              </span>
+            </span>
+          </td>
+          <td>
+            @if (detai.trang_thai === 'DANG_MO') {
+              <span class="status status-open">
+                Đang mở
+              </span>
+            } @else if (detai.trang_thai === 'DA_DU') {
+              <span class="status status-full">
+                Đã đủ
+              </span>
+            } @else {
+              <span class="status status-closed">
+                Đã đóng
+              </span>
+            }
+          </td>
+          <td>
+            <div class="actions">
+              <button
+                type="button"
+                class="btn-edit"
+                (click)="editDeTai(detai)">
+                Sửa
+              </button>
+              <button
+                type="button"
+                class="btn-delete"
+                (click)="deleteDeTai(detai.ma_dt)">
+                Xóa
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+      @if (detais.length === 0) {
+        <tr>
+          <td
+            colspan="6"
+            class="empty">
+            Chưa có dữ liệu đề tài
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+  </div>
+  <!-- Form -->
+  <div class="card form-card">
+<div class="card-header">
+  <div>
+    <p class="form-label">
+      {{ editing ? 'CHỈNH SỬA' : 'THÊM MỚI' }}
+    </p>
+    <h2>
+      {{ editing
+        ? 'Cập nhật đề tài'
+        : 'Thêm đề tài'
+      }}
+    </h2>
+    <p>
+      {{
+        editing
+          ? 'Cập nhật thông tin đề tài đang được chọn'
+          : 'Nhập thông tin để thêm đề tài mới'
+      }}
+    </p>
+  </div>
+</div>
+<form
+  (ngSubmit)="editing ? updateDeTai() : createDeTai()">
+  <div class="form-grid">
+    <!-- Mã đề tài -->
+    <div class="form-group">
+      <label>Mã đề tài</label>
+      <input
+        type="text"
+        name="ma_dt"
+        [(ngModel)]="newDeTai.ma_dt"
+        [disabled]="editing"
+        placeholder="VD: DT001"
+        required>
+    </div>
+    <!-- Tên đề tài -->
+    <div class="form-group">
+      <label>Tên đề tài</label>
+      <input
+        type="text"
+        name="ten_dt"
+        [(ngModel)]="newDeTai.ten_dt"
+        placeholder="Nhập tên đề tài"
+        required>
+    </div>
+    <!-- Giảng viên -->
+    <div class="form-group">
+      <label>Giảng viên hướng dẫn</label>
+      <input
+        type="text"
+        name="giang_vien"
+        [(ngModel)]="newDeTai.giang_vien"
+        placeholder="Nhập tên giảng viên"
+        required>
+    </div>
+    <!-- Số lượng -->
+    <div class="form-group">
+      <label>Số lượng sinh viên</label>
+      <input
+        type="number"
+        name="so_luong_sv"
+        [(ngModel)]="newDeTai.so_luong_sv"
+        min="1"
+        placeholder="VD: 3"
+        required>
+    </div>
+    <!-- Trạng thái -->
+    <div class="form-group">
+      <label>Trạng thái</label>
+      <select
+        name="trang_thai"
+        [(ngModel)]="newDeTai.trang_thai">
+        <option value="DANG_MO">
+          Đang mở
+        </option>
+        <option value="DA_DU">
+          Đã đủ
+        </option>
+        <option value="DA_DONG">
+          Đã đóng
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="form-actions">
+    <button
+      type="submit"
+      class="btn-primary">
+      {{ editing
+        ? 'Cập nhật đề tài'
+        : 'Thêm đề tài'
+      }}
+    </button>
+    @if (editing) {
+      <button
+        type="button"
+        class="btn-cancel"
+        (click)="resetForm()">
+        Hủy
+      </button>
+    }
+  </div>
+</form>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+<div class="brand-icon">
+  🎓
+</div>
+<div class="brand-text">
+  <strong>
+    Quản lý đồ án
+  </strong>
+  <span>
+    Tốt nghiệp
+  </span>
+</div>
+  </div>
+  <div class="nav-menu">
+<a
+  routerLink="/dashboard"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }">
+  <span class="nav-icon">
+    🏠
+  </span>
+  <span>
+    Trang chủ
+  </span>
+</a>
+<a
+  routerLink="/sinhvien"
+  routerLinkActive="active">
+  <span class="nav-icon">
+    👨‍🎓
+  </span>
+  <span>
+    Sinh viên
+  </span>
+</a>
+<a
+  routerLink="/detai"
+  routerLinkActive="active">
+  <span class="nav-icon">
+    📚
+  </span>
+  <span>
+    Đề tài
+  </span>
+</a>
+<a
+  routerLink="/dangky"
+  routerLinkActive="active">
+  <span class="nav-icon">
+    📝
+  </span>
+  <span>
+    Đăng ký
+  </span>
+</a>
+  </div>
+  <div class="navbar-status">
+<span class="status-dot"></span>
+<span>
+  Hệ thống hoạt động
+</span>
+  </div>
+</nav>
+<main>
+<router-outlet></router-outlet>
+</main>
