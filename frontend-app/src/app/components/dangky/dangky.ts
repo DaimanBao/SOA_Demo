@@ -20,10 +20,12 @@ export class Dangky implements OnInit {
   constructor(
     private dangkyService: DangkyService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
+  
   ngOnInit(): void {
     this.loadDangKy();
   }
+
   loadDangKy(): void {
     this.dangkyService.getAllDangKy().subscribe({
       next: (data: any) => {
@@ -42,6 +44,7 @@ export class Dangky implements OnInit {
       }
     });
   }
+
   loadDetailForEachDangKy(): void {
     this.dangkys.forEach(dangky => {
       this.dangkyService
@@ -63,6 +66,7 @@ export class Dangky implements OnInit {
         });
     });
   }
+
   createDangKy(): void {
     this.dangkyService
       .createDangKy(this.newDangKy)
@@ -90,6 +94,7 @@ export class Dangky implements OnInit {
         }
       });
   }
+
   editDangKy(dangky: any): void {
     this.newDangKy = {
       ma_dk: dangky.ma_dk,
@@ -107,6 +112,7 @@ export class Dangky implements OnInit {
     this.editing = true;
     this.cdr.detectChanges();
   }
+
   updateDangKy(): void {
     const ma_dk =
       this.newDangKy.ma_dk;
@@ -139,6 +145,7 @@ export class Dangky implements OnInit {
         }
       });
   }
+
   deleteDangKy(
     ma_dk: number
   ): void {
@@ -174,6 +181,7 @@ export class Dangky implements OnInit {
         }
       });
   }
+
   resetForm(): void {
     this.newDangKy = {
       ma_sv: '',
@@ -185,4 +193,5 @@ export class Dangky implements OnInit {
     };
     this.editing = false;
   }
+  
 }
