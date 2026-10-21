@@ -1,0 +1,141 @@
+services:
+  auth-service:
+    build:
+      context: ./auth-service
+    env_file:
+      - ./auth-service/.env
+    environment:
+      PORT: "3001"
+      DATABASE_URL: ${AUTH_DATABASE_URL:?Run scripts/dev.ps1 to load host database settings}
+      SINHVIEN_SERVICE_URL: http://sinhvien-service:3002
+    ports:
+      - "127.0.0.1:3001:3001"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3001/health').then(r => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1))"
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    depends_on:
+      sinhvien-service:
+        condition: service_healthy
+    restart: unless-stopped
+
+  sinhvien-service:
+    build:
+      context: ./sinhvien-service
+    env_file:
+      - ./sinhvien-service/.env
+    environment:
+      PORT: "3002"
+      DATABASE_URL: ${SINHVIEN_DATABASE_URL:?Run scripts/dev.ps1 to load host database settings}
+    ports:
+      - "127.0.0.1:3002:3002"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3002/health').then(r => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1))"
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    restart: unless-stopped
+
+  detai-service:
+    build:
+      context: ./detai-service
+    env_file:
+      - ./detai-service/.env
+    environment:
+      PORT: "3003"
+      DATABASE_URL: ${DETAI_DATABASE_URL:?Run scripts/dev.ps1 to load host database settings}
+    ports:
+      - "127.0.0.1:3003:3003"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3003/health').then(r => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1))"
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    restart: unless-stopped
+
+  dangky-service:
+    build:
+      context: ./dangky-service
+    env_file:
+      - ./dangky-service/.env
+    environment:
+      PORT: "3004"
+      DATABASE_URL: ${DANGKY_DATABASE_URL:?Run scripts/dev.ps1 to load host database settings}
+      SINHVIEN_SERVICE_URL: http://sinhvien-service:3002
+      DETAI_SERVICE_URL: http://detai-service:3003
+    ports:
+      - "127.0.0.1:3004:3004"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3004/health').then(r => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1))"
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    depends_on:
+      sinhvien-service:
+        condition: service_healthy
+      detai-service:
+        condition: service_healthy
+    restart: unless-stopped
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    env_file:
+      - ./api-gateway/.env
+    environment:
+      PORT: "3000"
+      AUTH_SERVICE_URL: http://auth-service:3001
+      SINHVIEN_SERVICE_URL: http://sinhvien-service:3002
+      DETAI_SERVICE_URL: http://detai-service:3003
+      DANGKY_SERVICE_URL: http://dangky-service:3004
+    ports:
+      - "127.0.0.1:3000:3000"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/health').then(r => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1))"
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      sinhvien-service:
+        condition: service_healthy
+      detai-service:
+        condition: service_healthy
+      dangky-service:
+        condition: service_healthy
+    restart: unless-stopped
