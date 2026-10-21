@@ -84,6 +84,7 @@
  </div>
 </div>
 <div class="management-grid">
+ @if (authService.getUser()?.role === 'ADMIN') {
  <!-- Sinh viên -->
   <a
     class="management-card"
@@ -115,6 +116,7 @@
       </span>
    </div>
  </a>
+ }
  <!-- Đề tài -->
   <a
     class="management-card"

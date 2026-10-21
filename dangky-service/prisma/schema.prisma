@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model dangky {
+  ma_dk        Int      @id @default(autoincrement())
+  ma_sv        String   @db.VarChar(20)
+  ma_dt        String   @db.VarChar(20)
+  ngay_dang_ky DateTime @default(dbgenerated("CURRENT_DATE")) @db.Date
+  trang_thai   String   @default("DA_DANG_KY") @db.VarChar(30)
+  diem         Decimal? @db.Decimal(4, 2)
+
+  @@unique([ma_sv, ma_dt], map: "uq_dangky_sinhvien_detai")
+}
