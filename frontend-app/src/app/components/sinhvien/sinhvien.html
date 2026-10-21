@@ -2,10 +2,10 @@
   <!-- Header -->
   <div class="page-header">
     <div>
-      <p class="page-label">QUẢN LÝ SINH VIÊN</p>
+      <p class="page-label">DỮ LIỆU SINH VIÊN</p>
       <h1>Danh sách sinh viên</h1>
       <p class="page-description">
-        Quản lý thông tin sinh viên trong hệ thống đồ án tốt nghiệp
+        Danh sách sinh viên trong hệ thống đồ án tốt nghiệp
       </p>
     </div>
     <div class="student-count">
@@ -32,7 +32,10 @@
             <th>Email</th>
             <th>Số điện thoại</th>
             <th>Lớp</th>
-            <th>Thao tác</th>
+            @if (authService.getUser()?.role === 'ADMIN') {
+              <th>Tài khoản</th>
+              <th>Thao tác</th>
+            }
           </tr>
         </thead>
         <tbody>
@@ -67,28 +70,45 @@
                   {{ sinhvien.lop }}
                 </span>
               </td>
-              <td>
-                <div class="actions">
+              @if (authService.getUser()?.role === 'ADMIN') {
+                <td>
                   <button
                     type="button"
-                    class="btn-edit"
-                    (click)="editSinhVien(sinhvien)">
-                    Sửa
+                    class="btn-account"
+                    [disabled]="provisioningStudentIds.has(sinhvien.ma_sv) || provisionedStudentIds.has(sinhvien.ma_sv)"
+                    (click)="provisionStudentAccount(sinhvien.ma_sv)">
+                    {{
+                      provisioningStudentIds.has(sinhvien.ma_sv)
+                        ? 'Đang cấp...'
+                        : provisionedStudentIds.has(sinhvien.ma_sv)
+                          ? 'Đã cấp'
+                          : 'Cấp tài khoản'
+                    }}
                   </button>
-                  <button
-                    type="button"
-                    class="btn-delete"
-                    (click)="deleteSinhVien(sinhvien.ma_sv)">
-                    Xóa
-                  </button>
-                </div>
-              </td>
+                </td>
+                <td>
+                  <div class="actions">
+                    <button
+                      type="button"
+                      class="btn-edit"
+                      (click)="editSinhVien(sinhvien)">
+                      Sửa
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-delete"
+                      (click)="deleteSinhVien(sinhvien.ma_sv)">
+                      Xóa
+                    </button>
+                  </div>
+                </td>
+              }
             </tr>
           }
           @if (sinhviens.length === 0) {
             <tr>
               <td
-                colspan="8"
+                [attr.colspan]="authService.getUser()?.role === 'ADMIN' ? 9 : 7"
                 class="empty">
                 Chưa có dữ liệu sinh viên
               </td>
@@ -98,6 +118,7 @@
       </table>
     </div>
   </div>
+  @if (authService.getUser()?.role === 'ADMIN') {
   <!-- Form Card -->
   <div class="card form-card">
     <div class="card-header">
@@ -211,4 +232,5 @@
       </div>
     </form>
   </div>
+  }
 </div>

@@ -1,67 +1,57 @@
-<nav class="navbar">
-  <div class="navbar-brand">
-<div class="brand-icon">
-  🎓
-</div>
-<div class="brand-text">
-  <strong>
-    Quản lý đồ án
-  </strong>
-  <span>
-    Tốt nghiệp
-  </span>
-</div>
-  </div>
-  <div class="nav-menu">
-<a
-  routerLink="/dashboard"
-  routerLinkActive="active"
-  [routerLinkActiveOptions]="{ exact: true }">
-  <span class="nav-icon">
-    🏠
-  </span>
-  <span>
-    Trang chủ
-  </span>
-</a>
-<a
-  routerLink="/sinhvien"
-  routerLinkActive="active">
-  <span class="nav-icon">
-    👨‍🎓
-  </span>
-  <span>
-    Sinh viên
-  </span>
-</a>
-<a
-  routerLink="/detai"
-  routerLinkActive="active">
-  <span class="nav-icon">
-    📚
-  </span>
-  <span>
-    Đề tài
-  </span>
-</a>
-<a
-  routerLink="/dangky"
-  routerLinkActive="active">
-  <span class="nav-icon">
-    📝
-  </span>
-  <span>
-    Đăng ký
-  </span>
-</a>
-  </div>
-  <div class="navbar-status">
-<span class="status-dot"></span>
-<span>
-  Hệ thống hoạt động
-</span>
-  </div>
-</nav>
+@if (authService.isLoggedIn() && !authService.mustChangePassword()) {
+  <header class="app-header">
+    <a class="brand" routerLink="/dashboard" aria-label="SOA Demo - Tổng quan">
+      <span class="brand-mark">S</span>
+      <span class="brand-copy">
+        <strong>SOA Demo</strong>
+        <span>Quản lý đồ án tốt nghiệp</span>
+      </span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Điều hướng chính">
+      <a routerLink="/dashboard" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <span class="nav-symbol">⌂</span>
+        Tổng quan
+      </a>
+
+      @if (authService.getUser()?.role === 'ADMIN') {
+        <a routerLink="/sinhvien" routerLinkActive="active" ariaCurrentWhenActive="page">
+          <span class="nav-symbol">♙</span>
+          Sinh viên
+        </a>
+      }
+
+      <a routerLink="/detai" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <span class="nav-symbol">▤</span>
+        Đề tài
+      </a>
+
+      <a routerLink="/dangky" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <span class="nav-symbol">☑</span>
+        Đăng ký
+      </a>
+    </nav>
+
+    <div class="account-area">
+      <span class="account-avatar">
+        {{ authService.getUser()?.username?.charAt(0)?.toUpperCase() }}
+      </span>
+      <div class="account-copy">
+        <strong>{{ authService.getUser()?.username }}</strong>
+        <span class="role-badge">
+          {{ authService.getUser()?.role === 'ADMIN' ? 'Quản trị viên' : 'Sinh viên' }}
+        </span>
+      </div>
+      <a class="change-password-link" routerLink="/change-password">
+        Đổi mật khẩu
+      </a>
+      <button class="logout-btn" type="button" (click)="logout()">
+        Đăng xuất
+      </button>
+    </div>
+  </header>
+}
+
 <main>
-<router-outlet></router-outlet>
+  <router-outlet />
 </main>

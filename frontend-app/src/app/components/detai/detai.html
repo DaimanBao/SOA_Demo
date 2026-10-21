@@ -5,7 +5,11 @@
   <p class="page-label">QUẢN LÝ ĐỀ TÀI</p>
   <h1>Danh sách đề tài</h1>
   <p class="page-description">
-    Quản lý các đề tài tốt nghiệp và thông tin giảng viên hướng dẫn
+    @if (authService.getUser()?.role === 'ADMIN') {
+      Quản lý các đề tài tốt nghiệp và thông tin giảng viên hướng dẫn
+    } @else {
+      Tra cứu đề tài, giảng viên hướng dẫn, chỉ tiêu và trạng thái đăng ký
+    }
   </p>
 </div>
 <div class="thesis-count">
@@ -19,7 +23,7 @@
   <div>
     <h2>Danh sách đề tài</h2>
     <p>
-      Thông tin các đề tài đang được quản lý trong hệ thống
+      Danh sách đề tài tốt nghiệp trong hệ thống
     </p>
   </div>
 </div>
@@ -32,7 +36,9 @@
         <th>Giảng viên</th>
         <th>Số lượng SV</th>
         <th>Trạng thái</th>
-        <th>Thao tác</th>
+        @if (authService.getUser()?.role === 'ADMIN') {
+          <th>Thao tác</th>
+        }
       </tr>
     </thead>
     <tbody>
@@ -81,28 +87,30 @@
               </span>
             }
           </td>
-          <td>
-            <div class="actions">
-              <button
-                type="button"
-                class="btn-edit"
-                (click)="editDeTai(detai)">
-                Sửa
-              </button>
-              <button
-                type="button"
-                class="btn-delete"
-                (click)="deleteDeTai(detai.ma_dt)">
-                Xóa
-              </button>
-            </div>
-          </td>
+          @if (authService.getUser()?.role === 'ADMIN') {
+            <td>
+              <div class="actions">
+                <button
+                  type="button"
+                  class="btn-edit"
+                  (click)="editDeTai(detai)">
+                  Sửa
+                </button>
+                <button
+                  type="button"
+                  class="btn-delete"
+                  (click)="deleteDeTai(detai.ma_dt)">
+                  Xóa
+                </button>
+              </div>
+            </td>
+          }
         </tr>
       }
       @if (detais.length === 0) {
         <tr>
           <td
-            colspan="6"
+            [attr.colspan]="authService.getUser()?.role === 'ADMIN' ? 6 : 5"
             class="empty">
             Chưa có dữ liệu đề tài
           </td>
@@ -112,6 +120,7 @@
   </table>
 </div>
   </div>
+  @if (authService.getUser()?.role === 'ADMIN') {
   <!-- Form -->
   <div class="card form-card">
 <div class="card-header">
@@ -217,4 +226,5 @@
   </div>
 </form>
   </div>
+  }
 </div>

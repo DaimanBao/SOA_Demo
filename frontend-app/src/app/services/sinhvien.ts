@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+export interface SinhVienUpdateInput {
+  ho_ten: string;
+  ngay_sinh: string | null;
+  gioi_tinh: string | null;
+  email: string | null;
+  so_dien_thoai: string | null;
+  lop: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,7 +27,7 @@ export class SinhvienService {
     return this.http.post(this.apiUrl, sinhvien);
   }
 
-  updateSinhVien(ma_sv: string, sinhvien: any) {
+  updateSinhVien(ma_sv: string, sinhvien: SinhVienUpdateInput) {
     return this.http.put(
       `${this.apiUrl}/${ma_sv}`,
       sinhvien

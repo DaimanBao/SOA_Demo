@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model sinhvien {
+  ma_sv         String    @id @db.VarChar(20)
+  ho_ten        String    @db.VarChar(100)
+  ngay_sinh     DateTime? @db.Date
+  gioi_tinh     String?   @db.VarChar(10)
+  email         String?   @unique @db.VarChar(100)
+  so_dien_thoai String?   @unique @db.VarChar(15)
+  lop           String    @db.VarChar(50)
+}

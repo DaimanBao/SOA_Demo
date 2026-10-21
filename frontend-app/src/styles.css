@@ -1,1 +1,522 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  color: #192230;
+  background: #f5f7fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --color-primary: #3458c5;
+  --color-primary-dark: #2949a8;
+  --color-ink: #192230;
+  --color-muted: #7a8494;
+  --color-border: #e5e9f0;
+  --color-surface: #ffffff;
+  --color-page: #f5f7fb;
+  --shadow-card: 0 8px 24px rgba(28, 42, 67, 0.045);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--color-page);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  font-family: inherit;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(52, 88, 197, 0.22);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: #dce6ff;
+  color: #192230;
+}
+
+.page {
+  width: min(1320px, 100%);
+  min-height: calc(100vh - 76px);
+  margin: 0 auto;
+  padding: 36px clamp(18px, 4vw, 52px) 54px;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.page-label,
+.form-label {
+  margin: 0 0 7px;
+  color: var(--color-primary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: clamp(25px, 4vw, 31px);
+  letter-spacing: -0.7px;
+}
+
+.page-description {
+  margin: 8px 0 0;
+  color: var(--color-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.thesis-count,
+.student-count,
+.registration-count {
+  min-width: 132px;
+  padding: 13px 17px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.thesis-count span,
+.student-count span,
+.registration-count span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+.thesis-count strong,
+.student-count strong,
+.registration-count strong {
+  color: var(--color-primary);
+  font-size: 25px;
+}
+
+.page .card {
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 13px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.page .card-header {
+  padding: 19px 22px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.page .card-header h2 {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 15px;
+}
+
+.page .card-header p {
+  margin: 5px 0 0;
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.page .table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.page table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+.page thead {
+  background: #f8f9fc;
+}
+
+.page th {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--color-border);
+  color: #748094;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.55px;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.page td {
+  padding: 13px 15px;
+  border-bottom: 1px solid #eff1f5;
+  color: #4e5a6b;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.page tbody tr {
+  transition: background 0.15s ease;
+}
+
+.page tbody tr:hover {
+  background: #fafbfe;
+}
+
+.page tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.page .empty {
+  padding: 36px;
+  color: #8b95a5;
+  text-align: center;
+}
+
+.page .actions {
+  display: flex;
+  gap: 6px;
+}
+
+.page button {
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.page .btn-edit,
+.page .btn-delete {
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 650;
+  transition: background 0.15s ease;
+}
+
+.page .btn-edit {
+  background: #edf2ff;
+  color: var(--color-primary);
+}
+
+.page .btn-edit:hover {
+  background: #dfe8ff;
+}
+
+.page .btn-delete {
+  background: #fff0f0;
+  color: #bd4545;
+}
+
+.page .btn-delete:hover {
+  background: #ffe2e2;
+}
+
+.page .form-card form {
+  padding: 22px;
+}
+
+.page .form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px 20px;
+}
+
+.page .form-group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.page .form-group label {
+  margin-bottom: 7px;
+  color: #475366;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.page .form-group input,
+.page .form-group select {
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 11px;
+  border: 1px solid #dce2eb;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-ink);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.page .form-group input:focus,
+.page .form-group select:focus {
+  border-color: #8099e3;
+  box-shadow: 0 0 0 3px rgba(52, 88, 197, 0.1);
+}
+
+.page .form-group input:disabled {
+  background: #f4f6f9;
+  color: var(--color-muted);
+}
+
+.page .form-group small {
+  margin-top: 6px;
+  color: #8993a2;
+  font-size: 10px;
+}
+
+.page .form-actions {
+  display: flex;
+  gap: 9px;
+  margin-top: 20px;
+}
+
+.page .btn-primary,
+.page .btn-cancel {
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.page .btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.page .btn-primary:hover {
+  background: var(--color-primary-dark);
+}
+
+.page .btn-cancel {
+  background: #eff1f5;
+  color: #515d6e;
+}
+
+.page .btn-cancel:hover {
+  background: #e4e8ef;
+}
+
+.page .thesis-id,
+.page .registration-id,
+.page .student-id {
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.page .thesis-name,
+.page .student-name {
+  color: var(--color-ink);
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.page .thesis-name {
+  max-width: 350px;
+}
+
+.page .lecturer,
+.page .person {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.page .lecturer-avatar,
+.page .avatar {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #edf2ff;
+  color: var(--color-primary);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.page .lecturer-avatar {
+  background: #eaf7f0;
+  color: #25845d;
+}
+
+.page .student-count-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 6px 9px;
+  border-radius: 7px;
+  background: #f1f4f9;
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.page .student-count-badge span {
+  color: var(--color-muted);
+  font-size: 9px;
+}
+
+.page .gender-badge,
+.page .class-badge {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 20px;
+  background: #f1f4f9;
+  color: #596579;
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.page .class-badge {
+  background: #edf2ff;
+  color: var(--color-primary);
+}
+
+.page .person-info,
+.page .thesis-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.page .person-info strong,
+.page .thesis-info strong {
+  max-width: 190px;
+  overflow: hidden;
+  color: var(--color-ink);
+  font-size: 11px;
+  text-overflow: ellipsis;
+}
+
+.page .person-info span,
+.page .thesis-info span {
+  color: var(--color-muted);
+  font-size: 10px;
+}
+
+.page .thesis-info {
+  max-width: 230px;
+  line-height: 1.4;
+}
+
+.page .status {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.page .status-open,
+.page .status-completed {
+  background: #eaf7f0;
+  color: #25845d;
+}
+
+.page .status-full {
+  background: #fff4e5;
+  color: #ae701f;
+}
+
+.page .status-closed,
+.page .status-cancelled {
+  background: #fceeee;
+  color: #b64a4a;
+}
+
+.page .status-registered {
+  background: #edf2ff;
+  color: var(--color-primary);
+}
+
+.workspace-card .card-arrow {
+  position: absolute;
+  top: 24px;
+  right: 23px;
+  color: #a4adba;
+  font-size: 18px;
+}
+
+.page .score {
+  display: inline-flex;
+  min-width: 35px;
+  justify-content: center;
+  padding: 5px 7px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.page .high-score {
+  background: #eaf7f0;
+  color: #25845d;
+}
+
+.page .medium-score {
+  background: #fff4e5;
+  color: #ae701f;
+}
+
+.page .low-score {
+  background: #fceeee;
+  color: #b64a4a;
+}
+
+.page .no-score {
+  color: #929bab;
+  font-size: 10px;
+}
+
+.page .date,
+.page .lecturer span {
+  font-size: 11px;
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: 25px 15px 38px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .thesis-count,
+  .student-count,
+  .registration-count {
+    width: 100%;
+  }
+
+  .page .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
