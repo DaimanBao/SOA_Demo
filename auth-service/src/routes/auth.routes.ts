@@ -6,6 +6,8 @@ const router = Router();
 
 router.post("/register", authController.register);
 router.post("/login", authController.login);
+router.post("/admin/provision-student", authController.provisionStudent);
+router.post("/change-password", authController.changePassword);
 router.get("/me", authController.me);
 
 export default router;

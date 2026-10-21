@@ -11,6 +11,8 @@ import { AuthService } from '../../services/auth';
   
 export class Sinhvien implements OnInit {
   sinhviens: any[] = [];
+  provisioningStudentIds = new Set<string>();
+  provisionedStudentIds = new Set<string>();
   newSinhVien: any = {
     ma_sv: '',
     ho_ten: '',
@@ -51,25 +53,54 @@ export class Sinhvien implements OnInit {
   }
   
   createSinhVien(): void {
-      this.sinhvienService
-        .createSinhVien(this.newSinhVien)
-        .subscribe({
-          next: (data: any) => {
-            // Thêm sinh viên mới vào danh sách
-            this.sinhviens = [
-              ...this.sinhviens,
-              data
-            ];
-            this.resetForm();
-            // Ép Angular render
-            this.cdr.detectChanges();
-            alert('Thêm sinh viên thành công');
-          },
-          error: (error) => {
-            console.error(error);
-            alert('Không thể thêm sinh viên');
-          }
-        });
+    this.sinhvienService.createSinhVien(this.newSinhVien).subscribe({
+      next: (data: any) => {
+        this.sinhviens = [...this.sinhviens, data];
+        this.resetForm();
+        this.cdr.detectChanges();
+        this.provisionStudentAccount(data.ma_sv);
+      },
+      error: (error) => {
+        console.error(error);
+        alert('Không thể thêm sinh viên');
+      }
+    });
+  }
+
+  provisionStudentAccount(ma_sv: string): void {
+    if (
+      this.provisioningStudentIds.has(ma_sv) ||
+      this.provisionedStudentIds.has(ma_sv)
+    ) {
+      return;
+    }
+
+    this.provisioningStudentIds.add(ma_sv);
+    this.authService.provisionStudentAccount(ma_sv).subscribe({
+      next: (result) => {
+        this.provisioningStudentIds.delete(ma_sv);
+        this.provisionedStudentIds.add(ma_sv);
+        this.cdr.detectChanges();
+
+        if (result.created) {
+          alert(
+            `Đã tạo tài khoản sinh viên.\n\nTên đăng nhập: ${result.username}\nMật khẩu ban đầu: ${result.initial_password}\n\nHãy gửi riêng thông tin này cho sinh viên. Sinh viên phải đổi mật khẩu sau lần đăng nhập đầu tiên.`
+          );
+          return;
+        }
+
+        alert(`Sinh viên đã có tài khoản: ${result.username}`);
+      },
+      error: (error) => {
+        this.provisioningStudentIds.delete(ma_sv);
+        this.cdr.detectChanges();
+        console.error('Lỗi cấp tài khoản sinh viên:', error);
+        alert(
+          `Hồ sơ sinh viên ${ma_sv} đã được tạo nhưng chưa cấp được tài khoản. ` +
+          (error.error?.message || 'Vui lòng thử lại bằng nút Cấp tài khoản.')
+        );
+      }
+    });
   }
   
   editSinhVien(sinhvien: any): void {

@@ -31,14 +31,14 @@
       <p class="subtitle">Sử dụng tài khoản của bạn để tiếp tục.</p>
     </div>
 
-    <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+    <form (ngSubmit)="onLogin(usernameInput.value, passwordInput.value)" #loginForm="ngForm">
       <div class="form-group">
         <label for="username">Tên đăng nhập</label>
         <input
           id="username"
           name="username"
           type="text"
-          [(ngModel)]="username"
+          #usernameInput
           placeholder="Nhập tên đăng nhập"
           autocomplete="username"
           required
@@ -47,15 +47,25 @@
 
       <div class="form-group">
         <label for="password">Mật khẩu</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          [(ngModel)]="password"
-          placeholder="Nhập mật khẩu"
-          autocomplete="current-password"
-          required
-        />
+        <div class="password-input-wrapper">
+          <input
+            id="password"
+            name="password"
+            [type]="passwordVisible ? 'text' : 'password'"
+            #passwordInput
+            placeholder="Nhập mật khẩu"
+            autocomplete="current-password"
+            required
+          />
+          <button
+            class="password-toggle"
+            type="button"
+            [attr.aria-label]="passwordVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+            [attr.aria-pressed]="passwordVisible"
+            (click)="passwordVisible = !passwordVisible">
+            {{ passwordVisible ? 'Ẩn' : 'Hiện' }}
+          </button>
+        </div>
       </div>
 
       @if (errorMessage) {

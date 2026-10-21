@@ -3,10 +3,26 @@ import type { Request, Response, NextFunction } from "express";
 import { authService } from "../services/auth.service";
 
 export const authController = {
-  async register(req: Request, res: Response, next: NextFunction) {
+  register(_req: Request, res: Response) {
+    res.status(403).json({
+      message: "Tài khoản sinh viên do quản trị viên cấp từ hồ sơ sinh viên",
+    });
+  },
+
+  async provisionStudent(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = await authService.register(req.body);
-      res.status(201).json(user);
+      const authorization = req.headers.authorization;
+
+      if (!authorization?.startsWith("Bearer ")) {
+        res.status(401).json({ message: "Bạn cần đăng nhập" });
+        return;
+      }
+
+      const result = await authService.provisionStudentAccount(
+        req.body?.ma_sv,
+        authorization.slice(7),
+      );
+      res.status(result.created ? 201 : 200).json(result);
     } catch (error) {
       next(error);
     }
@@ -18,6 +34,26 @@ export const authController = {
 
       const result = await authService.login(username, password);
 
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async changePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const authorization = req.headers.authorization;
+
+      if (!authorization?.startsWith("Bearer ")) {
+        res.status(401).json({ message: "Bạn cần đăng nhập" });
+        return;
+      }
+
+      const result = await authService.changePassword(
+        authorization.slice(7),
+        req.body?.current_password,
+        req.body?.new_password,
+      );
       res.status(200).json(result);
     } catch (error) {
       next(error);

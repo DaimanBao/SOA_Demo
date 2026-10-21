@@ -4,6 +4,7 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import {
   authenticate,
   authorize,
+  requirePasswordChangeComplete,
   requireAdminForWrite,
 } from "./middlewares/auth.middleware";
 
@@ -54,9 +55,9 @@ function proxy(target: string, pathFilter: string) {
 app.use(proxy(services.auth, "/api/auth"));
 
 // Tất cả API nghiệp vụ đều cần JWT
-app.use("/api/sinhvien", authenticate);
-app.use("/api/detai", authenticate);
-app.use("/api/dangky", authenticate);
+app.use("/api/sinhvien", authenticate, requirePasswordChangeComplete);
+app.use("/api/detai", authenticate, requirePasswordChangeComplete);
+app.use("/api/dangky", authenticate, requirePasswordChangeComplete);
 
 // SinhVien và DeTai: thao tác ghi chỉ dành cho ADMIN
 app.use("/api/sinhvien", requireAdminForWrite);

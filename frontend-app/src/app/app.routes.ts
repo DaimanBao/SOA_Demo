@@ -2,6 +2,7 @@
 import { Routes } from '@angular/router';
 
 import { Login } from './components/login/login';
+import { ChangePassword } from './components/change-password/change-password';
 import { Dashboard } from './components/dashboard/dashboard';
 import { Sinhvien } from './components/sinhvien/sinhvien';
 import { Detai } from './components/detai/detai';
@@ -10,6 +11,11 @@ import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
+  {
+    path: 'change-password',
+    component: ChangePassword,
+    canActivate: [authGuard]
+  },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
   {

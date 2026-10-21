@@ -1,4 +1,4 @@
-@if (authService.isLoggedIn()) {
+@if (authService.isLoggedIn() && !authService.mustChangePassword()) {
   <header class="app-header">
     <a class="brand" routerLink="/dashboard" aria-label="SOA Demo - Tổng quan">
       <span class="brand-mark">S</span>
@@ -42,6 +42,9 @@
           {{ authService.getUser()?.role === 'ADMIN' ? 'Quản trị viên' : 'Sinh viên' }}
         </span>
       </div>
+      <a class="change-password-link" routerLink="/change-password">
+        Đổi mật khẩu
+      </a>
       <button class="logout-btn" type="button" (click)="logout()">
         Đăng xuất
       </button>

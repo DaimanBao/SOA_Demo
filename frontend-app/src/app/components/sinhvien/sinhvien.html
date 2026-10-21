@@ -33,6 +33,7 @@
             <th>Số điện thoại</th>
             <th>Lớp</th>
             @if (authService.getUser()?.role === 'ADMIN') {
+              <th>Tài khoản</th>
               <th>Thao tác</th>
             }
           </tr>
@@ -71,6 +72,21 @@
               </td>
               @if (authService.getUser()?.role === 'ADMIN') {
                 <td>
+                  <button
+                    type="button"
+                    class="btn-account"
+                    [disabled]="provisioningStudentIds.has(sinhvien.ma_sv) || provisionedStudentIds.has(sinhvien.ma_sv)"
+                    (click)="provisionStudentAccount(sinhvien.ma_sv)">
+                    {{
+                      provisioningStudentIds.has(sinhvien.ma_sv)
+                        ? 'Đang cấp...'
+                        : provisionedStudentIds.has(sinhvien.ma_sv)
+                          ? 'Đã cấp'
+                          : 'Cấp tài khoản'
+                    }}
+                  </button>
+                </td>
+                <td>
                   <div class="actions">
                     <button
                       type="button"
@@ -92,7 +108,7 @@
           @if (sinhviens.length === 0) {
             <tr>
               <td
-                [attr.colspan]="authService.getUser()?.role === 'ADMIN' ? 8 : 7"
+                [attr.colspan]="authService.getUser()?.role === 'ADMIN' ? 9 : 7"
                 class="empty">
                 Chưa có dữ liệu sinh viên
               </td>

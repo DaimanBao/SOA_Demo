@@ -8,6 +8,7 @@ export interface AuthUser {
   username: string;
   role: string;
   ma_sv: string | null;
+  must_change_password?: boolean;
 }
 
 export interface LoginResponse {
@@ -39,6 +40,26 @@ export class AuthService {
     );
   }
 
+  provisionStudentAccount(ma_sv: string) {
+    return this.http.post<{
+      created: boolean;
+      username: string;
+      initial_password?: string;
+    }>(`${this.apiUrl}/admin/provision-student`, { ma_sv });
+  }
+
+  changePassword(current_password: string, new_password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/change-password`, {
+      current_password,
+      new_password
+    }).pipe(
+      tap(response => {
+        localStorage.setItem(this.tokenKey, response.access_token);
+        localStorage.setItem(this.userKey, JSON.stringify(response.user));
+      })
+    );
+  }
+
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
@@ -59,6 +80,10 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return this.getToken() !== null;
+  }
+
+  mustChangePassword(): boolean {
+    return this.getUser()?.must_change_password === true;
   }
 
   logout(): void {

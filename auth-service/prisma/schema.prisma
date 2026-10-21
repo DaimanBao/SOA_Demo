@@ -10,8 +10,9 @@ datasource db {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model users {
   id            Int     @id @default(autoincrement())
-  username      String  @unique @db.VarChar(50)
+  username      String  @unique @db.VarChar(120)
   password_hash String  @db.VarChar(255)
   role          String  @default("STUDENT") @db.VarChar(20)
   ma_sv         String? @unique @db.VarChar(20)
+  must_change_password Boolean @default(false)
 }

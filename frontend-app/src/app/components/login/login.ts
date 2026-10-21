@@ -11,8 +11,7 @@ import { AuthService } from '../../services/auth';
   styleUrl: './login.css'
 })
 export class Login {
-  username = '';
-  password = '';
+  passwordVisible = false;
   errorMessage = '';
   isLoading = false;
 
@@ -21,8 +20,10 @@ export class Login {
     private router: Router
   ) {}
 
-  onLogin(): void {
-    if (!this.username.trim() || !this.password) {
+  onLogin(username: string, password: string): void {
+    const normalizedUsername = username.trim();
+
+    if (!normalizedUsername || !password) {
       this.errorMessage = 'Vui lòng nhập đầy đủ tài khoản và mật khẩu.';
       return;
     }
@@ -30,11 +31,15 @@ export class Login {
     this.errorMessage = '';
     this.isLoading = true;
 
-    this.authService.login(this.username.trim(), this.password)
+    this.authService.login(normalizedUsername, password)
       .subscribe({
-        next: () => {
+        next: (response) => {
           this.isLoading = false;
-          this.router.navigate(['/dashboard']);
+          this.router.navigate([
+            response.user.must_change_password
+              ? '/change-password'
+              : '/dashboard'
+          ]);
         },
         error: (error) => {
           this.isLoading = false;

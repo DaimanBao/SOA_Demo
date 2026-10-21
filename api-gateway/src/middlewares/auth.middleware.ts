@@ -1,4 +1,3 @@
-
 import type { Request, Response, NextFunction } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 
@@ -7,6 +6,7 @@ export interface AuthPayload extends JwtPayload {
   username: string;
   role: "ADMIN" | "STUDENT";
   ma_sv: string | null;
+  must_change_password?: boolean;
 }
 
 export interface AuthRequest extends Request {
@@ -48,7 +48,9 @@ export function authenticate(
       !(
         decoded.ma_sv === null ||
         typeof decoded.ma_sv === "string"
-      )
+      ) ||
+      (decoded.must_change_password !== undefined &&
+        typeof decoded.must_change_password !== "boolean")
     ) {
       res.status(401).json({
         message: "Token không hợp lệ",
@@ -57,7 +59,6 @@ export function authenticate(
     }
 
     req.user = decoded as AuthPayload;
-
     next();
   } catch {
     res.status(401).json({
@@ -81,6 +82,22 @@ export function authorize(...allowedRoles: Array<"ADMIN" | "STUDENT">) {
 
     next();
   };
+}
+
+export function requirePasswordChangeComplete(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) {
+  if (req.user?.must_change_password) {
+    res.status(403).json({
+      message: "Bạn cần đổi mật khẩu trước khi tiếp tục",
+      code: "PASSWORD_CHANGE_REQUIRED",
+    });
+    return;
+  }
+
+  next();
 }
 
 export function allowOwnRegistration(
