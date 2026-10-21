@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DetaiService } from '../../services/detai';
+import { AuthService } from '../../services/auth';
 @Component({
   selector: 'app-detai',
   imports: [FormsModule],
@@ -22,7 +23,8 @@ export class Detai implements OnInit {
 
   constructor(
     private detaiService: DetaiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public authService: AuthService
   ) { }
   
   ngOnInit(): void {

@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SinhvienService } from '../../services/sinhvien';
+import { AuthService } from '../../services/auth';
 @Component({
   selector: 'app-sinhvien',
   imports: [FormsModule],
@@ -24,7 +25,8 @@ export class Sinhvien implements OnInit {
 
   constructor(
     private sinhvienService: SinhvienService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -82,15 +84,23 @@ export class Sinhvien implements OnInit {
   }
 
   updateSinhVien(): void {
-      const ma_sv = this.newSinhVien.ma_sv;
+      const ma_sv: string = this.newSinhVien.ma_sv;
+      const updateInput = {
+        ho_ten: this.newSinhVien.ho_ten,
+        ngay_sinh: this.newSinhVien.ngay_sinh || null,
+        gioi_tinh: this.newSinhVien.gioi_tinh || null,
+        email: this.newSinhVien.email || null,
+        so_dien_thoai: this.newSinhVien.so_dien_thoai || null,
+        lop: this.newSinhVien.lop
+      };
       console.log(
         'Đang cập nhật sinh viên:',
-        this.newSinhVien
+        { ma_sv, ...updateInput }
       );
       this.sinhvienService
         .updateSinhVien(
           ma_sv,
-          this.newSinhVien
+          updateInput
         )
         .subscribe({
           next: (data: any) => {

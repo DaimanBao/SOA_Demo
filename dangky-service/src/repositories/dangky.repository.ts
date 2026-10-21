@@ -14,6 +14,14 @@ export const dangkyRepository = {
     });
   },
 
+  findByStudentAndTopic(ma_sv: string, ma_dt: string) {
+    return prisma.dangky.findUnique({
+      where: {
+        ma_sv_ma_dt: { ma_sv, ma_dt },
+      },
+    });
+  },
+
   countByDetai(ma_dt: string) {
     return prisma.dangky.count({
       where: {
@@ -23,7 +31,11 @@ export const dangkyRepository = {
     });
   },
 
-  create(data: { ma_sv: string; ma_dt: string }) {
+  create(data: {
+    ma_sv: string;
+    ma_dt: string;
+    ngay_dang_ky?: Date;
+  }) {
     return prisma.dangky.create({ data });
   },
 

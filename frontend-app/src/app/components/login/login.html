@@ -1,8 +1,35 @@
 
 <div class="login-container">
+  <section class="login-intro">
+    <div class="login-brand">
+      <span class="brand-mark">S</span>
+      <span>
+        <strong>SOA Demo</strong>
+        <small>Đồ án tốt nghiệp</small>
+      </span>
+    </div>
+    <div class="intro-copy">
+      <p class="eyebrow">NỀN TẢNG QUẢN LÝ ĐỒ ÁN</p>
+      <h1>Mọi thông tin đồ án, trong một không gian.</h1>
+      <p class="intro-description">
+        Kết nối dữ liệu sinh viên, đề tài và quá trình đăng ký trên một hệ thống tập trung.
+      </p>
+      <div class="intro-points">
+        <span><b>✓</b> Quản lý đề tài và hướng dẫn</span>
+        <span><b>✓</b> Theo dõi đăng ký và kết quả</span>
+        <span><b>✓</b> Phân quyền theo tài khoản</span>
+      </div>
+    </div>
+    <span class="intro-orb intro-orb-one" aria-hidden="true"></span>
+    <span class="intro-orb intro-orb-two" aria-hidden="true"></span>
+  </section>
+
   <div class="login-card">
-    <h1>SOA Demo</h1>
-    <p class="subtitle">Đăng nhập hệ thống quản lý đề tài</p>
+    <div class="form-heading">
+      <p class="eyebrow">CHÀO MỪNG TRỞ LẠI</p>
+      <h2>Đăng nhập</h2>
+      <p class="subtitle">Sử dụng tài khoản của bạn để tiếp tục.</p>
+    </div>
 
     <form (ngSubmit)="onLogin()" #loginForm="ngForm">
       <div class="form-group">
@@ -39,5 +66,6 @@
         {{ isLoading ? 'Đang đăng nhập...' : 'Đăng nhập' }}
       </button>
     </form>
+    <p class="login-footnote">SOA Demo · Hệ thống quản lý đồ án tốt nghiệp</p>
   </div>
 </div>

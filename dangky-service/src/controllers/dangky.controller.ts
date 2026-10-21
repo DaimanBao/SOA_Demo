@@ -69,7 +69,7 @@ export const dangkyController = {
     next: NextFunction,
   ) {
     try {
-      const { ma_sv, ma_dt } = req.body;
+      const { ma_sv, ma_dt, ngay_dang_ky } = req.body;
       const authorization = req.headers.authorization;
 
       if (!authorization?.startsWith("Bearer ")) {
@@ -81,6 +81,7 @@ export const dangkyController = {
         ma_sv,
         ma_dt,
         authorization.slice(7),
+        req.user?.role === "ADMIN" ? ngay_dang_ky : undefined,
       );
 
       res.status(201).json(result);

@@ -3,13 +3,17 @@
   <div class="page-header">
 <div>
   <p class="page-label">
-    QUẢN LÝ ĐĂNG KÝ
+    {{ authService.getUser()?.role === 'ADMIN' ? 'QUẢN LÝ ĐĂNG KÝ' : 'ĐĂNG KÝ CỦA SINH VIÊN' }}
   </p>
   <h1>
     Đăng ký đề tài
   </h1>
   <p class="page-description">
-    Quản lý sinh viên đăng ký đề tài tốt nghiệp và kết quả thực hiện
+    @if (authService.getUser()?.role === 'ADMIN') {
+      Theo dõi đăng ký đề tài, trạng thái và kết quả thực hiện
+    } @else {
+      Tạo đăng ký đề tài bằng mã sinh viên liên kết với tài khoản của bạn
+    }
   </p>
 </div>
 <div class="registration-count">
@@ -58,9 +62,11 @@
         <th>
           Điểm
         </th>
-        <th>
-          Thao tác
-        </th>
+        @if (authService.getUser()?.role === 'ADMIN') {
+          <th>
+            Thao tác
+          </th>
+        }
       </tr>
     </thead>
     <tbody>
@@ -176,29 +182,30 @@
               </span>
             }
           </td>
-          <!-- Actions -->
-          <td>
-            <div class="actions">
-              <button
-                type="button"
-                class="btn-edit"
-                (click)="editDangKy(dangky)">
-                Sửa
-              </button>
-              <button
-                type="button"
-                class="btn-delete"
-                (click)="deleteDangKy(dangky.ma_dk)">
-                Xóa
-              </button>
-            </div>
-          </td>
+          @if (authService.getUser()?.role === 'ADMIN') {
+            <td>
+              <div class="actions">
+                <button
+                  type="button"
+                  class="btn-edit"
+                  (click)="editDangKy(dangky)">
+                  Sửa
+                </button>
+                <button
+                  type="button"
+                  class="btn-delete"
+                  (click)="deleteDangKy(dangky.ma_dk)">
+                  Xóa
+                </button>
+              </div>
+            </td>
+          }
         </tr>
       }
       @if (dangkys.length === 0) {
         <tr>
           <td
-            colspan="8"
+            [attr.colspan]="authService.getUser()?.role === 'ADMIN' ? 8 : 7"
             class="empty">
             Chưa có dữ liệu đăng ký
           </td>
@@ -208,6 +215,7 @@
   </table>
 </div>
   </div>
+  @if (authService.getUser()?.role === 'ADMIN' || !editing) {
   <!-- Form -->
   <div class="card form-card">
 <div class="card-header">
@@ -225,11 +233,14 @@
       }}
     </h2>
     <p>
-      {{
-        editing
+      @if (authService.getUser()?.role === 'ADMIN') {
+        {{ editing
           ? 'Cập nhật thông tin đăng ký và kết quả của sinh viên'
           : 'Tạo đăng ký đề tài cho sinh viên'
-      }}
+        }}
+      } @else {
+        Tạo đăng ký mới cho mã sinh viên liên kết với tài khoản của bạn
+      }
     </p>
   </div>
 </div>
@@ -249,11 +260,26 @@
         type="text"
         name="ma_sv"
         [(ngModel)]="newDangKy.ma_sv"
-        [disabled]="editing"
+        [disabled]="editing || authService.getUser()?.role === 'STUDENT'"
+        [attr.list]="authService.getUser()?.role === 'ADMIN' ? 'sinhvien-options' : null"
         placeholder="VD: SV001"
         required>
+      @if (authService.getUser()?.role === 'ADMIN') {
+        <datalist id="sinhvien-options">
+          @for (sinhvien of sinhvienOptions; track sinhvien.ma_sv) {
+            <option
+              [value]="sinhvien.ma_sv"
+              [label]="sinhvien.ho_ten + ' · ' + sinhvien.lop">
+            </option>
+          }
+        </datalist>
+      }
       <small>
-        Sinh viên phải tồn tại trong hệ thống
+        @if (sinhvienOptionsError) {
+          Không tải được gợi ý; bạn vẫn có thể nhập mã sinh viên trực tiếp.
+        } @else {
+          Chọn mã sinh viên từ gợi ý hoặc nhập mã có sẵn trong hệ thống.
+        }
       </small>
     </div>
     <!-- Đề tài -->
@@ -266,13 +292,26 @@
         name="ma_dt"
         [(ngModel)]="newDangKy.ma_dt"
         [disabled]="editing"
+        list="detai-options"
         placeholder="VD: DT001"
         required>
+      <datalist id="detai-options">
+        @for (detai of detaiOptions; track detai.ma_dt) {
+          <option
+            [value]="detai.ma_dt"
+            [label]="detai.ten_dt + ' · ' + detai.giang_vien">
+          </option>
+        }
+      </datalist>
       <small>
-        Đề tài phải tồn tại và còn chỗ
+        @if (detaiOptionsError) {
+          Không tải được gợi ý; bạn vẫn có thể nhập mã đề tài trực tiếp.
+        } @else {
+          Chọn đề tài đang mở từ gợi ý hoặc nhập mã đề tài.
+        }
       </small>
     </div>
-    <!-- Ngày -->
+    @if (authService.getUser()?.role === 'ADMIN' && !editing) {
     <div class="form-group">
       <label>
         Ngày đăng ký
@@ -282,8 +321,13 @@
         name="ngay_dang_ky"
         [(ngModel)]="newDangKy.ngay_dang_ky"
         required>
+      <small>
+        Ngày sinh viên thực hiện đăng ký.
+      </small>
     </div>
+    }
     <!-- Status -->
+    @if (authService.getUser()?.role === 'ADMIN') {
     <div class="form-group">
       <label>
         Trạng thái
@@ -302,7 +346,9 @@
         </option>
       </select>
     </div>
+    }
     <!-- Score -->
+    @if (authService.getUser()?.role === 'ADMIN') {
     <div class="form-group score-group">
       <label>
         Điểm
@@ -319,6 +365,7 @@
         Điểm từ 0 đến 10
       </small>
     </div>
+    }
   </div>
   <div class="form-actions">
     <button
@@ -340,4 +387,5 @@
   </div>
 </form>
   </div>
+  }
 </div>

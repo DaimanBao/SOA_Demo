@@ -1,181 +1,101 @@
 <div class="dashboard-page">
- <!-- Welcome -->
- <section class="welcome-section">
-<div class="welcome-content">
- <p class="welcome-label">
-    HỆ THỐNG QUẢN LÝ
-  </p>
- <h1>
-    Quản lý đồ án tốt nghiệp
-  </h1>
- <p class="welcome-description">
-    Quản lý sinh viên, đề tài và quá trình đăng ký
-    đồ án tốt nghiệp trên một hệ thống tập trung.
-  </p>
-</div>
-<div class="welcome-icon">
-  <span>🎓</span>
-</div>
- </section>
- <!-- Statistics -->
- <section class="statistics">
-<div class="stat-card">
- <div class="stat-icon student-icon">
-    👨‍🎓
-  </div>
- <div class="stat-content">
-   <span>
-      Sinh viên
-    </span>
-   <strong>
-      Quản lý
-    </strong>
-   <small>
-      Thông tin sinh viên
-    </small>
- </div>
-</div>
-<div class="stat-card">
- <div class="stat-icon thesis-icon">
-    📚
-  </div>
- <div class="stat-content">
-   <span>
-      Đề tài
-    </span>
-   <strong>
-      Quản lý
-    </strong>
-   <small>
-      Đề tài tốt nghiệp
-    </small>
- </div>
-</div>
-<div class="stat-card">
- <div class="stat-icon registration-icon">
-    📝
-  </div>
- <div class="stat-content">
-   <span>
-      Đăng ký
-    </span>
-   <strong>
-      Quản lý
-    </strong>
-   <small>
-      Đăng ký đề tài
-    </small>
- </div>
-</div>
- </section>
- <!-- Main Menu -->
- <section class="section">
-<div class="section-header">
- <div>
-   <p class="section-label">
-      CHỨC NĂNG HỆ THỐNG
+  <section class="welcome-panel">
+    <div class="welcome-copy">
+      <p class="eyebrow">KHÔNG GIAN LÀM VIỆC</p>
+      <h1>
+        Xin chào, {{ authService.getUser()?.username }}
+      </h1>
+      @if (authService.getUser()?.role === 'ADMIN') {
+        <p>
+          Theo dõi và quản lý sinh viên, đề tài cùng các đăng ký đồ án trên một hệ thống.
+        </p>
+      } @else {
+        <p>
+          Tra cứu đề tài và theo dõi thông tin đăng ký đồ án tốt nghiệp của bạn.
+        </p>
+      }
+      <a class="welcome-link" routerLink="/detai">
+        Khám phá danh sách đề tài
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+    <div class="welcome-art" aria-hidden="true">
+      <span class="art-cap">✦</span>
+      <span class="art-book">▤</span>
+      <span class="art-circle"></span>
+    </div>
+  </section>
+
+  <section class="workspace-section" aria-labelledby="workspace-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">CHỨC NĂNG</p>
+        <h2 id="workspace-title">
+          {{ authService.getUser()?.role === 'ADMIN' ? 'Quản lý hệ thống' : 'Không gian đồ án' }}
+        </h2>
+      </div>
+      <span class="role-summary">
+        {{ authService.getUser()?.role === 'ADMIN' ? 'Quản trị viên' : 'Tài khoản sinh viên' }}
+      </span>
+    </div>
+
+    <div class="workspace-grid">
+      @if (authService.getUser()?.role === 'ADMIN') {
+        <a class="workspace-card students-card" routerLink="/sinhvien">
+          <span class="card-icon">♙</span>
+          <span class="card-arrow" aria-hidden="true">↗</span>
+          <span class="card-title">Sinh viên</span>
+          <span class="card-description">
+            Quản lý hồ sơ, thông tin liên hệ và danh sách sinh viên.
+          </span>
+          <span class="card-action">Mở quản lý sinh viên <span aria-hidden="true">→</span></span>
+        </a>
+      }
+
+      <a class="workspace-card thesis-card" routerLink="/detai">
+        <span class="card-icon">▤</span>
+        <span class="card-arrow" aria-hidden="true">↗</span>
+        <span class="card-title">Đề tài tốt nghiệp</span>
+        <span class="card-description">
+          @if (authService.getUser()?.role === 'ADMIN') {
+            Tạo và cập nhật đề tài, giảng viên hướng dẫn, chỉ tiêu và trạng thái.
+          } @else {
+            Xem nội dung đề tài, giảng viên hướng dẫn, chỉ tiêu và trạng thái.
+          }
+        </span>
+        <span class="card-action">
+          {{ authService.getUser()?.role === 'ADMIN' ? 'Quản lý đề tài' : 'Xem danh sách đề tài' }}
+          <span aria-hidden="true">→</span>
+        </span>
+      </a>
+
+      <a class="workspace-card registration-card" routerLink="/dangky">
+        <span class="card-icon">✓</span>
+        <span class="card-arrow" aria-hidden="true">↗</span>
+        <span class="card-title">Đăng ký đề tài</span>
+        <span class="card-description">
+          @if (authService.getUser()?.role === 'ADMIN') {
+            Theo dõi đăng ký, cập nhật trạng thái và kết quả của sinh viên.
+          } @else {
+            Tạo đăng ký bằng mã sinh viên của bạn và theo dõi tiến độ.
+          }
+        </span>
+        <span class="card-action">
+          {{ authService.getUser()?.role === 'ADMIN' ? 'Quản lý đăng ký' : 'Đăng ký / theo dõi' }}
+          <span aria-hidden="true">→</span>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <aside class="access-note">
+    <span class="note-icon" aria-hidden="true">i</span>
+    <p>
+      @if (authService.getUser()?.role === 'ADMIN') {
+        Bạn đang sử dụng quyền quản trị. Các thao tác thêm, sửa và xóa được cung cấp trong từng mục quản lý.
+      } @else {
+        Tài khoản sinh viên có thể xem dữ liệu và tạo đăng ký cho mã sinh viên được liên kết với tài khoản.
+      }
     </p>
-   <h2>
-      Quản lý dữ liệu
-    </h2>
-   <p>
-      Chọn chức năng bạn muốn thực hiện
-    </p>
- </div>
+  </aside>
 </div>
-<div class="management-grid">
- @if (authService.getUser()?.role === 'ADMIN') {
- <!-- Sinh viên -->
-  <a
-    class="management-card"
-    routerLink="/sinhvien">
-   <div class="card-top">
-     <div class="management-icon student-icon">
-        👨‍🎓
-      </div>
-     <span class="arrow">
-        →
-      </span>
-   </div>
-   <div class="management-content">
-     <h3>
-        Sinh viên
-      </h3>
-     <p>
-        Quản lý thông tin sinh viên,
-        mã sinh viên, lớp, email,
-        số điện thoại và thông tin cá nhân.
-      </p>
-   </div>
-   <div class="card-footer">
-     <span>
-        Quản lý sinh viên
-      </span>
-     <span>
-        →
-      </span>
-   </div>
- </a>
- }
- <!-- Đề tài -->
-  <a
-    class="management-card"
-    routerLink="/detai">
-   <div class="card-top">
-     <div class="management-icon thesis-icon">
-        📚
-      </div>
-     <span class="arrow">
-        →
-      </span>
-   </div>
-   <div class="management-content">
-     <h3>
-        Đề tài
-      </h3>
-     <p>
-        Quản lý đề tài tốt nghiệp,
-        giảng viên hướng dẫn,
-        số lượng sinh viên và trạng thái.
-      </p>
-   </div>
-   <div class="card-footer">
-     <span>
-        Quản lý đề tài
-      </span>
-     <span>
-        →
-      </span>
-   </div>
- </a>
- <!-- Đăng ký -->
-  <a
-    class="management-card"
-    routerLink="/dangky">
-   <div class="card-top">
-     <div class="management-icon registration-icon">
-        📝
-      </div>
-     <span class="arrow">
-        →
-      </span>
-   </div>
-   <div class="management-content">
-     <h3>
-        Đăng ký đề tài
-      </h3>
-     <p>
-        Quản lý đăng ký đề tài,
-        trạng thái thực hiện và
-        kết quả điểm của sinh viên.
-      </p>
-   </div>
-   <div class="card-footer">
-     <span>
-        Quản lý đăng ký
-      </span>
-     <span>
-        →
-      </span>
-   </div>
- </a>

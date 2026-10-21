@@ -8,6 +8,27 @@ function httpError(message: string, statusCode: number) {
   return Object.assign(new Error(message), { statusCode });
 }
 
+function parseRegistrationDate(value: unknown): Date | undefined {
+  if (value === undefined || value === null || value === "") {
+    return undefined;
+  }
+
+  if (
+    typeof value !== "string" ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(value)
+  ) {
+    throw httpError("ngay_dang_ky không hợp lệ", 400);
+  }
+
+  const date = new Date(`${value}T00:00:00.000Z`);
+
+  if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value) {
+    throw httpError("ngay_dang_ky không hợp lệ", 400);
+  }
+
+  return date;
+}
+
 async function getRemoteData(
   url: string,
   label: string,
@@ -75,9 +96,26 @@ export const dangkyService = {
     return dangky;
   },
   
-  async create(ma_sv: string, ma_dt: string, token: string) {
+  async create(
+    ma_sv: string,
+    ma_dt: string,
+    token: string,
+    requestedDate?: unknown,
+  ) {
+    const ngay_dang_ky = parseRegistrationDate(requestedDate);
+
     if (!ma_sv?.trim() || !ma_dt?.trim()) {
       throw httpError("ma_sv và ma_dt là bắt buộc", 400);
+    }
+
+    const existingRegistration =
+      await dangkyRepository.findByStudentAndTopic(ma_sv, ma_dt);
+
+    if (existingRegistration) {
+      throw httpError(
+        "Sinh viên đã có đăng ký cho đề tài này. Vui lòng kiểm tra danh sách đăng ký hoặc chọn đề tài khác.",
+        409,
+      );
     }
 
     if (!sinhvienUrl || !detaiUrl) {
@@ -114,7 +152,11 @@ export const dangkyService = {
       throw httpError("Đề tài đã đủ số lượng sinh viên", 409);
     }
 
-    return dangkyRepository.create({ ma_sv, ma_dt });
+    return dangkyRepository.create({
+      ma_sv,
+      ma_dt,
+      ...(ngay_dang_ky && { ngay_dang_ky }),
+    });
   },
 
   async update(

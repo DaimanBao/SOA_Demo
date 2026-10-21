@@ -1,52 +1,48 @@
-
 @if (authService.isLoggedIn()) {
-  <header class="navbar">
-    <a class="navbar-brand" routerLink="/dashboard">
-      <span class="brand-icon">🎓</span>
-      <span class="brand-text">
+  <header class="app-header">
+    <a class="brand" routerLink="/dashboard" aria-label="SOA Demo - Tổng quan">
+      <span class="brand-mark">S</span>
+      <span class="brand-copy">
         <strong>SOA Demo</strong>
-        <span>Hệ thống quản lý đề tài</span>
+        <span>Quản lý đồ án tốt nghiệp</span>
       </span>
     </a>
 
-    <nav class="nav-menu">
-      <a routerLink="/dashboard" routerLinkActive="active">
-        <span class="nav-icon">⌂</span>
-        Dashboard
+    <nav class="primary-nav" aria-label="Điều hướng chính">
+      <a routerLink="/dashboard" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <span class="nav-symbol">⌂</span>
+        Tổng quan
       </a>
 
       @if (authService.getUser()?.role === 'ADMIN') {
-        <a routerLink="/sinhvien" routerLinkActive="active">
-          <span class="nav-icon">♙</span>
+        <a routerLink="/sinhvien" routerLinkActive="active" ariaCurrentWhenActive="page">
+          <span class="nav-symbol">♙</span>
           Sinh viên
         </a>
       }
 
-      <a routerLink="/detai" routerLinkActive="active">
-        <span class="nav-icon">▤</span>
+      <a routerLink="/detai" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <span class="nav-symbol">▤</span>
         Đề tài
       </a>
 
-      <a routerLink="/dangky" routerLinkActive="active">
-        <span class="nav-icon">☑</span>
+      <a routerLink="/dangky" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <span class="nav-symbol">☑</span>
         Đăng ký
       </a>
     </nav>
 
-    <div class="navbar-status">
-      <span class="status-dot"></span>
-      <span>Đã đăng nhập</span>
-    </div>
-
-    <div class="user-info">
-      <div class="user-details">
+    <div class="account-area">
+      <span class="account-avatar">
+        {{ authService.getUser()?.username?.charAt(0)?.toUpperCase() }}
+      </span>
+      <div class="account-copy">
         <strong>{{ authService.getUser()?.username }}</strong>
         <span class="role-badge">
-          {{ authService.getUser()?.role }}
+          {{ authService.getUser()?.role === 'ADMIN' ? 'Quản trị viên' : 'Sinh viên' }}
         </span>
       </div>
-
-      <button class="logout-btn" (click)="logout()">
+      <button class="logout-btn" type="button" (click)="logout()">
         Đăng xuất
       </button>
     </div>
