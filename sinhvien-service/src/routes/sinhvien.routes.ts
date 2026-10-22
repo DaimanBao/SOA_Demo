@@ -5,8 +5,6 @@ import { authenticate, requireAdmin } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.get("/:ma_sv", sinhvienController.findById);
-
 router.use(authenticate);
 
 router.get("/", sinhvienController.findAll);

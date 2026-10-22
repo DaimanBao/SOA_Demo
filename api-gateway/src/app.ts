@@ -10,6 +10,7 @@ import {
 
 const app = express(); 
 
+// CORS Middleware dùng để cho phép các request từ frontend (http://localhost:4200) được gửi đến API Gateway
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
   res.header(
