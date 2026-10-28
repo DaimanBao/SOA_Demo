@@ -82,15 +82,15 @@ export class Detai implements OnInit {
   }
 
   updateDeTai(): void {
-    const ma_dt = this.newDeTai.ma_dt;
+    const { ma_dt, ...updateInput } = this.newDeTai;
     console.log(
       'Đang cập nhật đề tài:',
-      this.newDeTai
+      updateInput
     );
     this.detaiService
       .updateDeTai(
         ma_dt,
-        this.newDeTai
+        updateInput
       )
       .subscribe({
         next: (data: any) => {
@@ -116,7 +116,7 @@ export class Detai implements OnInit {
             error
           );
           alert(
-            error.error?.error ||
+            error.error?.message ||
             'Không thể cập nhật đề tài'
           );
         }

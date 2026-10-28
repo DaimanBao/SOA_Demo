@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth';
 export class Sinhvien implements OnInit {
   sinhviens: any[] = [];
   provisioningStudentIds = new Set<string>();
-  provisionedStudentIds = new Set<string>();
+  resettingStudentIds = new Set<string>();
   newSinhVien: any = {
     ma_sv: '',
     ho_ten: '',
@@ -68,10 +68,7 @@ export class Sinhvien implements OnInit {
   }
 
   provisionStudentAccount(ma_sv: string): void {
-    if (
-      this.provisioningStudentIds.has(ma_sv) ||
-      this.provisionedStudentIds.has(ma_sv)
-    ) {
+    if (this.provisioningStudentIds.has(ma_sv)) {
       return;
     }
 
@@ -79,7 +76,6 @@ export class Sinhvien implements OnInit {
     this.authService.provisionStudentAccount(ma_sv).subscribe({
       next: (result) => {
         this.provisioningStudentIds.delete(ma_sv);
-        this.provisionedStudentIds.add(ma_sv);
         this.cdr.detectChanges();
 
         if (result.created) {
@@ -97,7 +93,38 @@ export class Sinhvien implements OnInit {
         console.error('Lỗi cấp tài khoản sinh viên:', error);
         alert(
           `Hồ sơ sinh viên ${ma_sv} đã được tạo nhưng chưa cấp được tài khoản. ` +
-          (error.error?.message || 'Vui lòng thử lại bằng nút Cấp tài khoản.')
+          (error.error?.message || 'Vui lòng kiểm tra lại cấu hình và thử lại.')
+        );
+      }
+    });
+  }
+
+  resetStudentAccount(ma_sv: string): void {
+    if (this.resettingStudentIds.has(ma_sv)) {
+      return;
+    }
+
+    if (!confirm(`Đặt lại mật khẩu cho sinh viên ${ma_sv}?`)) {
+      return;
+    }
+
+    this.resettingStudentIds.add(ma_sv);
+    this.authService.resetStudentPassword(ma_sv).subscribe({
+      next: (result) => {
+        this.resettingStudentIds.delete(ma_sv);
+        this.cdr.detectChanges();
+
+        alert(
+          `Đã đặt lại mật khẩu tài khoản.\n\nTên đăng nhập: ${result.username}\nMật khẩu tạm thời: ${result.temporary_password}\n\nHãy gửi riêng thông tin này cho sinh viên. Sinh viên phải đổi mật khẩu sau lần đăng nhập tiếp theo.`
+        );
+      },
+      error: (error) => {
+        this.resettingStudentIds.delete(ma_sv);
+        this.cdr.detectChanges();
+        console.error('Lỗi đặt lại mật khẩu sinh viên:', error);
+        alert(
+          error.error?.message ||
+          `Không thể đặt lại mật khẩu cho sinh viên ${ma_sv}.`
         );
       }
     });

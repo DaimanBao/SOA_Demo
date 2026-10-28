@@ -3,6 +3,19 @@ import type { Request, Response, NextFunction } from "express";
 import { authService } from "../services/auth.service";
 
 export const authController = {
+  async bootstrapAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await authService.bootstrapAdmin(
+        req.body?.username,
+        req.body?.password,
+        req.header("x-admin-bootstrap-secret"),
+      );
+      res.status(201).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   register(_req: Request, res: Response) {
     res.status(403).json({
       message: "Tài khoản sinh viên do quản trị viên cấp từ hồ sơ sinh viên",
@@ -23,6 +36,25 @@ export const authController = {
         authorization.slice(7),
       );
       res.status(result.created ? 201 : 200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async resetStudentPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const authorization = req.headers.authorization;
+
+      if (!authorization?.startsWith("Bearer ")) {
+        res.status(401).json({ message: "Bạn cần đăng nhập" });
+        return;
+      }
+
+      const result = await authService.resetStudentPassword(
+        req.body?.ma_sv,
+        authorization.slice(7),
+      );
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }

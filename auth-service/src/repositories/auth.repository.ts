@@ -2,6 +2,33 @@
 import { prisma } from "../lib/prisma";
 
 export const authRepository = {
+  createFirstAdmin(data: {
+    username: string;
+    password_hash: string;
+  }) {
+    return prisma.$transaction(
+      async (transaction) => {
+        const adminCount = await transaction.users.count({
+          where: { role: "ADMIN" },
+        });
+
+        if (adminCount > 0) {
+          return null;
+        }
+
+        return transaction.users.create({
+          data: {
+            ...data,
+            role: "ADMIN",
+            ma_sv: null,
+            must_change_password: false,
+          },
+        });
+      },
+      { isolationLevel: "Serializable" },
+    );
+  },
+
   findByUsername(username: string) {
     return prisma.users.findUnique({
       where: { username },

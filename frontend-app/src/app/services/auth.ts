@@ -40,6 +40,13 @@ export class AuthService {
     );
   }
 
+  resetStudentPassword(ma_sv: string) {
+    return this.http.post<{
+      username: string;
+      temporary_password: string;
+    }>(`${this.apiUrl}/admin/reset-student-password`, { ma_sv });
+  }
+
   provisionStudentAccount(ma_sv: string) {
     return this.http.post<{
       created: boolean;

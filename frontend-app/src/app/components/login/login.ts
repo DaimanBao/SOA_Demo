@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
@@ -17,7 +17,8 @@ export class Login {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   onLogin(username: string, password: string): void {
@@ -35,6 +36,7 @@ export class Login {
       .subscribe({
         next: (response) => {
           this.isLoading = false;
+          this.cdr.detectChanges();
           this.router.navigate([
             response.user.must_change_password
               ? '/change-password'
@@ -45,6 +47,7 @@ export class Login {
           this.isLoading = false;
           this.errorMessage =
             error.error?.message || 'Đăng nhập thất bại. Vui lòng thử lại.';
+          this.cdr.detectChanges();
         }
       });
   }
