@@ -37,6 +37,28 @@ function createToken(user: {
   );
 }
 
+function getDefaultStudentPassword(ma_sv: string, ho_ten: string) {
+  const password = `${ma_sv}${ho_ten}`
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[đĐ]/g, "d")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
+  if (!password || password.length > 120) {
+    throw httpError("Không thể tạo thông tin đăng nhập từ mã và họ tên sinh viên", 422);
+  }
+
+  if (Buffer.byteLength(password, "utf8") > 72) {
+    throw httpError(
+      "Mã và họ tên tạo mật khẩu quá dài; hãy rút gọn tên trong hồ sơ trước.",
+      422,
+    );
+  }
+
+  return password;
+}
+
 export const authService = {
   async provisionStudentAccount(ma_sv: unknown, token: string) {
     const payload = this.verifyToken(token);
@@ -99,23 +121,7 @@ export const authService = {
       throw httpError("Hồ sơ sinh viên thiếu mã hoặc họ tên hợp lệ", 422);
     }
 
-    const username = `${ma_sv}${student.ho_ten}`
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[đĐ]/g, "d")
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, "");
-
-    if (!username || username.length > 120) {
-      throw httpError("Không thể tạo tài khoản từ mã và họ tên sinh viên", 422);
-    }
-
-    if (Buffer.byteLength(username, "utf8") > 72) {
-      throw httpError(
-        "Mã và họ tên tạo mật khẩu ban đầu quá dài; hãy rút gọn tên trong hồ sơ trước.",
-        422,
-      );
-    }
+    const username = getDefaultStudentPassword(ma_sv.trim(), student.ho_ten);
 
     const existingUsername = await authRepository.findByUsername(username);
 
@@ -139,6 +145,80 @@ export const authService = {
       created: true,
       username: user.username,
       initial_password: username,
+    };
+  },
+
+  async resetStudentPassword(ma_sv: unknown, token: string) {
+    const payload = this.verifyToken(token);
+
+    if (
+      typeof payload === "string" ||
+      payload.role !== "ADMIN"
+    ) {
+      throw httpError("Chỉ ADMIN được đặt lại mật khẩu sinh viên", 403);
+    }
+
+    if (typeof ma_sv !== "string" || !ma_sv.trim()) {
+      throw httpError("Mã sinh viên không hợp lệ", 400);
+    }
+
+    const studentId = ma_sv.trim();
+    const user = await authRepository.findByMaSv(studentId);
+
+    if (!user) {
+      throw httpError("Sinh viên chưa có tài khoản để đặt lại mật khẩu", 404);
+    }
+
+    const sinhvienServiceUrl = process.env.SINHVIEN_SERVICE_URL;
+
+    if (!sinhvienServiceUrl) {
+      throw httpError("Thiếu cấu hình SINHVIEN_SERVICE_URL", 500);
+    }
+
+    let response: Response;
+
+    try {
+      response = await fetch(
+        `${sinhvienServiceUrl.replace(/\/+$/, "")}/api/sinhvien/${encodeURIComponent(studentId)}`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+    } catch {
+      throw httpError("SinhVien Service không khả dụng", 503);
+    }
+
+    if (response.status === 404) {
+      throw httpError("Mã sinh viên không tồn tại", 404);
+    }
+
+    if (!response.ok) {
+      throw httpError("Không thể xác minh hồ sơ sinh viên", 503);
+    }
+
+    const student = await response.json() as {
+      ma_sv?: unknown;
+      ho_ten?: unknown;
+    };
+
+    if (
+      student.ma_sv !== studentId ||
+      typeof student.ho_ten !== "string" ||
+      !student.ho_ten.trim()
+    ) {
+      throw httpError("Hồ sơ sinh viên thiếu mã hoặc họ tên hợp lệ", 422);
+    }
+
+    const temporaryPassword = getDefaultStudentPassword(
+      studentId,
+      student.ho_ten,
+    );
+    const updatedUser = await authRepository.updatePassword(user.id, {
+      password_hash: await bcrypt.hash(temporaryPassword, 12),
+      must_change_password: true,
+    });
+
+    return {
+      username: updatedUser.username,
+      temporary_password: temporaryPassword,
     };
   },
 

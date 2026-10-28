@@ -75,14 +75,12 @@
                   <button
                     type="button"
                     class="btn-account"
-                    [disabled]="provisioningStudentIds.has(sinhvien.ma_sv) || provisionedStudentIds.has(sinhvien.ma_sv)"
-                    (click)="provisionStudentAccount(sinhvien.ma_sv)">
+                    [disabled]="resettingStudentIds.has(sinhvien.ma_sv)"
+                    (click)="resetStudentAccount(sinhvien.ma_sv)">
                     {{
-                      provisioningStudentIds.has(sinhvien.ma_sv)
-                        ? 'Đang cấp...'
-                        : provisionedStudentIds.has(sinhvien.ma_sv)
-                          ? 'Đã cấp'
-                          : 'Cấp tài khoản'
+                      resettingStudentIds.has(sinhvien.ma_sv)
+                        ? 'Đang reset...'
+                        : 'Reset tài khoản'
                     }}
                   </button>
                 </td>

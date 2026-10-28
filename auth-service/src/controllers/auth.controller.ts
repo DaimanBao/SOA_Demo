@@ -28,6 +28,25 @@ export const authController = {
     }
   },
 
+  async resetStudentPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const authorization = req.headers.authorization;
+
+      if (!authorization?.startsWith("Bearer ")) {
+        res.status(401).json({ message: "Bạn cần đăng nhập" });
+        return;
+      }
+
+      const result = await authService.resetStudentPassword(
+        req.body?.ma_sv,
+        authorization.slice(7),
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { username, password } = req.body;
