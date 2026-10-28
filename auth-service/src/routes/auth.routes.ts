@@ -4,6 +4,7 @@ import { authController } from "../controllers/auth.controller";
 
 const router = Router();
 
+router.post("/admin/bootstrap", authController.bootstrapAdmin);
 router.post("/register", authController.register);
 router.post("/login", authController.login);
 router.post("/admin/provision-student", authController.provisionStudent);

@@ -3,6 +3,19 @@ import type { Request, Response, NextFunction } from "express";
 import { authService } from "../services/auth.service";
 
 export const authController = {
+  async bootstrapAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await authService.bootstrapAdmin(
+        req.body?.username,
+        req.body?.password,
+        req.header("x-admin-bootstrap-secret"),
+      );
+      res.status(201).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   register(_req: Request, res: Response) {
     res.status(403).json({
       message: "Tài khoản sinh viên do quản trị viên cấp từ hồ sơ sinh viên",

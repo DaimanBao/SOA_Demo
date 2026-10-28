@@ -1,5 +1,6 @@
 
 import bcrypt from "bcryptjs";
+import { timingSafeEqual } from "node:crypto";
 import jwt, { type SignOptions } from "jsonwebtoken";
 import { authRepository } from "../repositories/auth.repository";
 
@@ -60,6 +61,76 @@ function getDefaultStudentPassword(ma_sv: string, ho_ten: string) {
 }
 
 export const authService = {
+  async bootstrapAdmin(
+    username: unknown,
+    password: unknown,
+    suppliedSecret: string | undefined,
+  ) {
+    const bootstrapSecret = process.env.ADMIN_BOOTSTRAP_SECRET;
+
+    if (!bootstrapSecret || bootstrapSecret.length < 32) {
+      throw httpError(
+        "ADMIN_BOOTSTRAP_SECRET chưa được cấu hình hoặc không đủ mạnh",
+        503,
+      );
+    }
+
+    if (
+      !suppliedSecret ||
+      Buffer.byteLength(suppliedSecret) !== Buffer.byteLength(bootstrapSecret) ||
+      !timingSafeEqual(
+        Buffer.from(suppliedSecret),
+        Buffer.from(bootstrapSecret),
+      )
+    ) {
+      throw httpError("Secret bootstrap không hợp lệ", 403);
+    }
+
+    if (
+      typeof username !== "string" ||
+      !username.trim() ||
+      username.trim().length > 120
+    ) {
+      throw httpError("Username phải có từ 1 đến 120 ký tự", 400);
+    }
+
+    if (
+      typeof password !== "string" ||
+      password.length < 12 ||
+      Buffer.byteLength(password, "utf8") > 72
+    ) {
+      throw httpError("Mật khẩu phải có ít nhất 12 ký tự và không quá 72 byte", 400);
+    }
+
+    try {
+      const user = await authRepository.createFirstAdmin({
+        username: username.trim(),
+        password_hash: await bcrypt.hash(password, 12),
+      });
+
+      if (!user) {
+        throw httpError("ADMIN đã tồn tại; bootstrap chỉ dùng để tạo ADMIN đầu tiên", 409);
+      }
+
+      return {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      };
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2034"
+      ) {
+        throw httpError("ADMIN đã được tạo; bootstrap chỉ dùng một lần", 409);
+      }
+
+      throw error;
+    }
+  },
+
   async provisionStudentAccount(ma_sv: unknown, token: string) {
     const payload = this.verifyToken(token);
 

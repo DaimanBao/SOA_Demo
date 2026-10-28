@@ -96,12 +96,14 @@ export class Dangky implements OnInit {
         );
         this.dangkys = data;
         this.attachRegistrationDetails();
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error(
           'Lỗi lấy danh sách đăng ký:',
           error
         );
+        this.cdr.detectChanges();
       }
     });
   }
